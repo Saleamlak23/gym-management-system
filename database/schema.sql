@@ -78,7 +78,17 @@ CREATE TABLE members (
     last_name  VARCHAR(50)     NOT NULL,
     email      VARCHAR(150)    NOT NULL UNIQUE,
     phone      VARCHAR(20),
-    join_date  DATE            NOT NULL DEFAULT CURRENT_DATE
+    password   VARCHAR(255)    NOT NULL,               -- bcrypt hash (min 8 chars enforced at API layer)
+    join_date  DATE            NOT NULL DEFAULT CURRENT_DATE,
+    is_active  BOOLEAN         NOT NULL DEFAULT TRUE,  -- soft-delete flag, mirrors staff table
+
+    -- Email must contain @ and at least one dot after it
+    CONSTRAINT members_email_format CHECK (email ~* '^[^@]+@[^@]+\.[^@]+$'),
+
+    -- Phone must be NULL or contain only digits, spaces, hyphens, and + prefix
+    CONSTRAINT members_phone_format CHECK (
+        phone IS NULL OR phone ~* '^\+?[\d\s\-]{7,20}$'
+    )
 );
 
 -- ---------------------------------------------------------------
@@ -198,6 +208,7 @@ CREATE TABLE class_bookings (
 
 -- Members
 CREATE INDEX idx_members_email        ON members(email);
+CREATE INDEX idx_members_is_active    ON members(is_active);
 
 -- Staff
 CREATE INDEX idx_staff_branch         ON staff(branch_id);
