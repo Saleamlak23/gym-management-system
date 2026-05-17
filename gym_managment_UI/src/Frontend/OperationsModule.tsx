@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { DataTable, DataTableColumn } from '../DataTable';
-import { Drawer } from '../Drawer';
-import { ClassMaster, DailySchedule, ClassBooking, PersonalTrainingSession } from '../types';
+import { DataTable } from './DataTable';
+import type { DataTableColumn } from './DataTable';
+import { Drawer } from './Drawer';
+import type { ClassMaster, DailySchedule, ClassBooking, PersonalTrainingSession } from './types';
 
 export const OperationsModule: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'classes' | 'schedules' | 'bookings' | 'training'>('classes');
@@ -354,7 +355,7 @@ export const OperationsModule: React.FC = () => {
                 </label>
                 <input
                   type="time"
-                  defaultValue={selectedRow?.startTime || ''}
+                  defaultValue={selectedRow?.startTime ? selectedRow.startTime.split(' ')[0].replace(/:/g, ':') : ''}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
@@ -364,7 +365,7 @@ export const OperationsModule: React.FC = () => {
                 </label>
                 <input
                   type="time"
-                  defaultValue={selectedRow?.endTime || ''}
+                  defaultValue={selectedRow?.endTime ? selectedRow.endTime.split(' ')[0].replace(/:/g, ':') : ''}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>

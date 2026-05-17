@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { DataTable, DataTableColumn } from '../DataTable';
-import { Drawer } from '../Drawer';
-import { Staff, Branch, EquipmentCategory, Equipment, MaintenanceLog } from '../types';
+import { DataTable } from './DataTable';
+import type { DataTableColumn } from './DataTable';
+import { Drawer } from './Drawer';
+import type { Staff, Branch, EquipmentCategory, Equipment, MaintenanceLog } from './types';
 
 export const AdminModule: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'branches' | 'staff' | 'roles' | 'equipment' | 'maintenance'>('branches');

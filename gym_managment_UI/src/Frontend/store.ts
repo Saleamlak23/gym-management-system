@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { User, JWTPayload } from './types';
+import type { User, JWTPayload } from './types';
 
 interface StoreState {
   // Authentication
@@ -108,7 +108,7 @@ export const useStore = create<StoreState>((set, get) => {
     
     isTrainer: () => {
       const state = get();
-      return state.user?.role === 'staff';
+      return state.user?.role === 'trainer';
     },
     
     isAdmin: () => {

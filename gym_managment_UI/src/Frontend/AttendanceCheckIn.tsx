@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { CheckCircle, AlertCircle, LogOut } from 'lucide-react';
-import { AttendanceCheckIn } from '../types';
+import type { AttendanceCheckIn as AttendanceCheckInType } from './types';
 
 export const AttendanceCheckIn: React.FC = () => {
   const [memberId, setMemberId] = useState('');
-  const [checkInResult, setCheckInResult] = useState<AttendanceCheckIn | null>(null);
+  const [checkInResult, setCheckInResult] = useState<AttendanceCheckInType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [activeSession, setActiveSession] = useState<{ id: number; checkInTime: string } | null>(null);
 
@@ -101,7 +101,7 @@ export const AttendanceCheckIn: React.FC = () => {
                     type="text"
                     value={memberId}
                     onChange={(e) => setMemberId(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleCheckIn()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleCheckIn()}
                     className="flex-1 px-6 py-4 text-2xl border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                     placeholder="000000"
                     disabled={isLoading}

@@ -187,7 +187,7 @@ export const ReportingModule: React.FC = () => {
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={staffPerformanceData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+              <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} interval={0} />
               <YAxis />
               <Tooltip />
               <Legend />

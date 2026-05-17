@@ -1,6 +1,6 @@
 import React from 'react';
 import { Bell, Menu, LogOut } from 'lucide-react';
-import { useStore } from '../store';
+import { useStore } from './store';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
             </div>
             <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-              {user?.avatar || user?.name?.[0]}
+              {user?.avatar || user?.name?.charAt(0)}
             </div>
             <button 
               onClick={handleLogout}

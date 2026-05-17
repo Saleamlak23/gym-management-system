@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { DataTable, DataTableColumn } from '../DataTable';
-import { Drawer } from '../Drawer';
-import { Member, MembershipType, Subscription, Payment, AttendanceLog } from '../types';
+import { DataTable } from './DataTable';
+import type { DataTableColumn } from './DataTable';
+import { Drawer } from './Drawer';
+import type { Member, MembershipType, Subscription, Payment, AttendanceLog } from './types';
 
 export const MembersModule: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'members' | 'plans' | 'subscriptions' | 'payments' | 'attendance'>('members');

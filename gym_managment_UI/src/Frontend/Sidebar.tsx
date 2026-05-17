@@ -8,7 +8,7 @@ import {
   LogOut,
   ClipboardList
 } from 'lucide-react';
-import { useStore } from '../store';
+import { useStore } from './store';
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -65,7 +65,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onClose }) => {
 
   const visibleMenuItems = menuItems.filter(item => {
     if (item.requiresAdmin) {
-      return isAdmin();
+      return isAdmin;
     }
     return true;
   });
