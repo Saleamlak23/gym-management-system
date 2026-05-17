@@ -7,17 +7,22 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const { user, notifications } = useStore();
+  const { user, notifications, currentModule, logout } = useStore();
 
   const getModuleTitle = () => {
     const titles: Record<string, string> = {
       dashboard: 'Dashboard',
+      attendance: 'Member Check-In',
       admin: 'Admin & Infrastructure',
       operations: 'Club Operations',
       members: 'Member & Finance',
       reporting: 'Reporting & Analytics'
     };
-    return titles[useStore().currentModule] || 'Dashboard';
+    return titles[currentModule] || 'Dashboard';
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   return (
@@ -57,7 +62,11 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
               {user?.avatar || user?.name?.[0]}
             </div>
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600">
+            <button 
+              onClick={handleLogout}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600 hover:text-red-600"
+              title="Logout"
+            >
               <LogOut size={20} />
             </button>
           </div>
