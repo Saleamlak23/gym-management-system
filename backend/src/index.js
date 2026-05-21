@@ -13,7 +13,9 @@
 //    7. Start listening on PORT
 // =============================================================
 
-require('dotenv').config();
+// require('dotenv').config();
+import 'dotenv/config';
+
 
 import express, { json, urlencoded } from 'express';
 import cors from 'cors';
