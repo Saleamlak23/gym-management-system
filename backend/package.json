@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Express + PostgreSQL backend for the Gym & Fitness Club Management System",
   "main": "src/index.js",
+  "type": "module",
   "author": "Saleamlak Setie",
   "engines": {
     "node": ">=18.0.0"
