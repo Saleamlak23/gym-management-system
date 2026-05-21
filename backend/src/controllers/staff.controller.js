@@ -17,9 +17,9 @@
 // =============================================================
 
 import { hash } from 'bcryptjs';
-import { query } from '../config/db';
-import { sendSuccess, sendError } from '../utils/response';
-import { asyncHandler } from '../middleware/error.middleware';
+import { query } from '../config/db.js';
+import { sendSuccess, sendError } from '../utils/response.js';
+import { asyncHandler } from '../middleware/error.middleware.js';
 
 const SALT_ROUNDS = 12;
 

@@ -86,3 +86,5 @@ const transaction = async (callback) => {
 };
 
 export default { pool, query, transaction };
+
+export { pool, query, transaction };

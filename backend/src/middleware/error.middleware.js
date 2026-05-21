@@ -20,7 +20,7 @@
 //    app.use(errorHandler);
 // =============================================================
 
-import { sendError } from '../utils/response';
+import { sendError } from '../utils/response.js';
 
 // -------------------------------------------------------------
 //  errorHandler
@@ -164,4 +164,7 @@ const extractPgField = (detail = '') => {
 };
 
 
+// Export named exports for ESM import style, and keep a default
+// export for any CommonJS-like consumers that expect a default.
+export { errorHandler, asyncHandler, notFound };
 export default { errorHandler, asyncHandler, notFound };

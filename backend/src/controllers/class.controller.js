@@ -16,9 +16,9 @@
 //    myBookings           — logged-in member's bookings
 // =============================================================
 
-import { query, transaction } from '../config/db';
-import { sendSuccess, sendError } from '../utils/response';
-import { asyncHandler } from '../middleware/error.middleware';
+import { query, transaction } from '../config/db.js';
+import { sendSuccess, sendError } from '../utils/response.js';
+import { asyncHandler } from '../middleware/error.middleware.js';
 
 
 export const listClasses = asyncHandler(async (req, res) => {

@@ -10,11 +10,12 @@
 // =============================================================
 
 import { hash, compare } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+const { sign } = jwt;
 
-import { query } from '../config/db';
-import { sendSuccess, sendError, sendServerError } from '../utils/response';
-import { asyncHandler } from '../middleware/error.middleware';
+import { query } from '../config/db.js';
+import { sendSuccess, sendError, sendServerError } from '../utils/response.js';
+import { asyncHandler } from '../middleware/error.middleware.js';
 
 const SALT_ROUNDS = 12;
 

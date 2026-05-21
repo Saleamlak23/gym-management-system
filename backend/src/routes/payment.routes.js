@@ -15,9 +15,9 @@
 import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 
-import validate from '../middleware/validate.middleware';
-import { protect, authorize, authorizeSelf } from '../middleware/auth.middleware';
-import { create, list, summary, listByMember } from '../controllers/payment.controller';
+import validate from '../middleware/validate.middleware.js';
+import { protect, authorize, authorizeSelf } from '../middleware/auth.middleware.js';
+import { create, list, summary, listByMember } from '../controllers/payment.controller.js';
 
 const router = Router();
 

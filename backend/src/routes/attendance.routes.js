@@ -17,9 +17,9 @@
 import { Router } from 'express';
 import { body, param } from 'express-validator';
 
-import validate from '../middleware/validate.middleware';
-import { protect, authorize, authorizeSelf } from '../middleware/auth.middleware';
-import { checkIn, checkOut, list, todayByBranch, heatmap, listByMember } from '../controllers/attendance.controller';
+import validate from '../middleware/validate.middleware.js';
+import { protect, authorize, authorizeSelf } from '../middleware/auth.middleware.js';
+import { checkIn, checkOut, list, todayByBranch, heatmap, listByMember } from '../controllers/attendance.controller.js';
 
 const router = Router();
 

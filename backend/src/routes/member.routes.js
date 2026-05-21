@@ -20,9 +20,9 @@
 import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 
-import validate from '../middleware/validate.middleware';
-import { protect, authorize, authorizeSelf } from '../middleware/auth.middleware';
-import { list, getOne, update, deactivate, listSubscriptions, createSubscription, updateSubscriptionStatus } from '../controllers/member.controller';
+import validate from '../middleware/validate.middleware.js';
+import { protect, authorize, authorizeSelf } from '../middleware/auth.middleware.js';
+import { list, getOne, update, deactivate, listSubscriptions, createSubscription, updateSubscriptionStatus } from '../controllers/member.controller.js';
 
 const router = Router();
 

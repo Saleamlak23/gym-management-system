@@ -18,9 +18,9 @@
 import { Router } from 'express';
 import { body, param } from 'express-validator';
 
-import validate from '../middleware/validate.middleware';
-import { protect, authorize, authorizeSelf } from '../middleware/auth.middleware';
-import { list, mine, listByTrainer, listByMember, create, updateStatus, cancel } from '../controllers/training.controller';
+import validate from '../middleware/validate.middleware.js';
+import { protect, authorize, authorizeSelf } from '../middleware/auth.middleware.js';
+import { list, mine, listByTrainer, listByMember, create, updateStatus, cancel } from '../controllers/training.controller.js';
 
 const router = Router();
 

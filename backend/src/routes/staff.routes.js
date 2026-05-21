@@ -24,9 +24,9 @@
 import { Router } from 'express';
 import { body, param } from 'express-validator';
 
-import validate from '../middleware/validate.middleware';
-import { protect, authorize } from '../middleware/auth.middleware';
-import { listRoles, createRole, updateRole, list, create, getOne, update, deactivate, getSchedule, getPayroll } from '../controllers/staff.controller';
+import validate from '../middleware/validate.middleware.js';
+import { protect, authorize } from '../middleware/auth.middleware.js';
+import { listRoles, createRole, updateRole, list, create, getOne, update, deactivate, getSchedule, getPayroll } from '../controllers/staff.controller.js';
 
 const router = Router();
 

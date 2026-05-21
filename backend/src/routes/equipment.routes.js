@@ -22,9 +22,9 @@
 import { Router } from 'express';
 import { body, param } from 'express-validator';
 
-import validate from '../middleware/validate.middleware';
-import { protect, authorize } from '../middleware/auth.middleware';
-import { listCategories, createCategory, listOverdue, list, create, getOne, updateStatus, listMaintenance, logMaintenance } from '../controllers/equipment.controller';
+import validate from '../middleware/validate.middleware.js';
+import { protect, authorize } from '../middleware/auth.middleware.js';
+import { listCategories, createCategory, listOverdue, list, create, getOne, updateStatus, listMaintenance, logMaintenance } from '../controllers/equipment.controller.js';
 
 const router = Router();
 

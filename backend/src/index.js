@@ -21,18 +21,18 @@ import express, { json, urlencoded } from 'express';
 import cors from 'cors';
 
 // Middleware
-import { errorHandler, notFound } from './middleware/error.middleware';
+import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 // Route files — uncomment each one as you build it
-import authRoutes from './routes/auth.routes';
-import memberRoutes from './routes/member.routes';
-import staffRoutes from './routes/staff.routes';
-import paymentRoutes from './routes/payment.routes';
-import classRoutes from './routes/class.routes';
-import trainingRoutes from './routes/training.routes';
-import equipmentRoutes from './routes/equipment.routes';
-import attendanceRoutes from './routes/attendance.routes';
-import analyticsRoutes from './routes/analytics.routes';
+import authRoutes from './routes/auth.routes.js';
+import memberRoutes from './routes/member.routes.js';
+import staffRoutes from './routes/staff.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
+import classRoutes from './routes/class.routes.js';
+import trainingRoutes from './routes/training.routes.js';
+import equipmentRoutes from './routes/equipment.routes.js';
+import attendanceRoutes from './routes/attendance.routes.js';
+import analyticsRoutes from './routes/analytics.routes.js';
 
 // -------------------------------------------------------------
 //  App initialisation

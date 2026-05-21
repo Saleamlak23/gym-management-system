@@ -25,9 +25,9 @@
 import { Router } from 'express';
 import { body, param, query } from 'express-validator';
 
-import validate from '../middleware/validate.middleware';
-import { protect, authorize } from '../middleware/auth.middleware';
-import { listClasses, createClass, updateClass, listSchedules, createSchedule, cancelSchedule, listSessionBookings, myBookings, createBooking, cancelBooking } from '../controllers/class.controller';
+import validate from '../middleware/validate.middleware.js';
+import { protect, authorize } from '../middleware/auth.middleware.js';
+import { listClasses, createClass, updateClass, listSchedules, createSchedule, cancelSchedule, listSessionBookings, myBookings, createBooking, cancelBooking } from '../controllers/class.controller.js';
 
 const router = Router();
 

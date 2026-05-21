@@ -15,9 +15,9 @@
 //    logMaintenance  — record a new maintenance event
 // =============================================================
 
-import { query, transaction } from '../config/db';
-import { sendSuccess, sendError } from '../utils/response';
-import { asyncHandler } from '../middleware/error.middleware';
+import { query, transaction } from '../config/db.js';
+import { sendSuccess, sendError } from '../utils/response.js';
+import { asyncHandler } from '../middleware/error.middleware.js';
 
 // Configurable thresholds
 const OVERDUE_DAYS         = 90;    // days since last service before flagged as overdue

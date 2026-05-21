@@ -17,9 +17,9 @@
 import { Router } from 'express';
 import { param } from 'express-validator';
 
-import validate from '../middleware/validate.middleware';
-import { protect, authorize } from '../middleware/auth.middleware';
-import { overview, branchOverview, revenue, memberGrowth, classFillRate } from '../controllers/analytics.controller';
+import validate from '../middleware/validate.middleware.js';
+import { protect, authorize } from '../middleware/auth.middleware.js';
+import { overview, branchOverview, revenue, memberGrowth, classFillRate } from '../controllers/analytics.controller.js';
 
 const router = Router();
 

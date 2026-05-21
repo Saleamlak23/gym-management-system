@@ -10,9 +10,9 @@
 //    summary       — revenue aggregation for reports/dashboard
 // =============================================================
 
-import { query } from '../config/db';
-import { sendSuccess, sendError } from '../utils/response';
-import { asyncHandler } from '../middleware/error.middleware';
+import { query } from '../config/db.js';
+import { sendSuccess, sendError } from '../utils/response.js';
+import { asyncHandler } from '../middleware/error.middleware.js';
 
 
 export const create = asyncHandler(async (req, res) => {

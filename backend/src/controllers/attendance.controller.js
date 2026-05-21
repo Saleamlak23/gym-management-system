@@ -12,9 +12,9 @@
 //    heatmap        — 7×24 average check-in grid for peak-hour view
 // =============================================================
 
-import { query } from '../config/db';
-import { sendSuccess, sendError } from '../utils/response';
-import { asyncHandler } from '../middleware/error.middleware';
+import { query } from '../config/db.js';
+import { sendSuccess, sendError } from '../utils/response.js';
+import { asyncHandler } from '../middleware/error.middleware.js';
 
 
 export const checkIn = asyncHandler(async (req, res) => {

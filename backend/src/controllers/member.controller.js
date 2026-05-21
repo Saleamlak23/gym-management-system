@@ -13,9 +13,9 @@
 //    updateSubscriptionStatus — freeze, cancel, reactivate
 // =============================================================
 
-import { query, transaction } from '../config/db';
-import { sendSuccess, sendError, sendServerError } from '../utils/response';
-import { asyncHandler } from '../middleware/error.middleware';
+import { query, transaction } from '../config/db.js';
+import { sendSuccess, sendError, sendServerError } from '../utils/response.js';
+import { asyncHandler } from '../middleware/error.middleware.js';
 
 
 export const list = asyncHandler(async (req, res) => {

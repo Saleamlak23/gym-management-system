@@ -38,8 +38,9 @@
 //    }
 // =============================================================
 
-import { verify } from 'jsonwebtoken';
-import { sendError } from '../utils/response';
+import jwt from 'jsonwebtoken';
+const { verify } = jwt;
+import { sendError } from '../utils/response.js';
 
 // -------------------------------------------------------------
 //  protect
@@ -203,4 +204,5 @@ const authorizeBranch = (req, res, next) => {
 };
 
 
+export { protect, authorize, authorizeSelf, authorizeBranch };
 export default { protect, authorize, authorizeSelf, authorizeBranch };

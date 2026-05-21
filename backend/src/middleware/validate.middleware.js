@@ -27,8 +27,8 @@
 //    );
 // =============================================================
 
-const { validationResult } = require('express-validator');
-const { sendValidationError } = require('../utils/response');
+import { validationResult } from 'express-validator';
+import { sendValidationError } from '../utils/response.js';
 
 // -------------------------------------------------------------
 //  validate
@@ -51,4 +51,5 @@ const validate = (req, res, next) => {
   return sendValidationError(res, errors);
 };
 
-module.exports = validate;
+export default validate;
+export { validate };

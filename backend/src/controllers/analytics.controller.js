@@ -14,9 +14,9 @@
 //  expensive aggregation calls from the dashboard.
 // =============================================================
 
-import { query } from '../config/db';
-import { sendSuccess, sendError } from '../utils/response';
-import { asyncHandler } from '../middleware/error.middleware';
+import { query } from '../config/db.js';
+import { sendSuccess, sendError } from '../utils/response.js';
+import { asyncHandler } from '../middleware/error.middleware.js';
 
 // Cache for 60 seconds — dashboards refresh frequently
 const CACHE_HEADER = 'public, max-age=60';
