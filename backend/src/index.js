@@ -13,7 +13,6 @@
 //    7. Start listening on PORT
 // =============================================================
 
-// require('dotenv').config();
 import 'dotenv/config';
 
 
