@@ -95,12 +95,21 @@ export const updateClass = asyncHandler(async (req, res) => {
 
 export const listSchedules = asyncHandler(async (req, res) => {
   const branchId = req.query.branch_id || '';
-  const dateFrom = req.query.date      || new Date().toISOString().split('T')[0];
-  const isWeek   = req.query.week      === 'true';
+
+// Robust date handling
+  const dateInput = req.query.date || new Date().toISOString().split('T')[0];
+  const dateObj = new Date(dateInput);
+  
+  // Prevent crash if date is garbage
+  if (isNaN(dateObj.getTime())) {
+     return sendError(res, 'Invalid date format', 400);
+  }
+
+  const dateFrom = dateObj.toISOString().split('T')[0];
+  const isWeek   = req.query.week === 'true';
 
   const dateTo = isWeek
-    ? new Date(new Date(dateFrom).setDate(new Date(dateFrom).getDate() + 7))
-        .toISOString().split('T')[0]
+    ? new Date(dateObj.setDate(dateObj.getDate() + 7)).toISOString().split('T')[0]
     : dateFrom;
 
   const params  = [dateFrom, dateTo + ' 23:59:59'];
@@ -289,7 +298,6 @@ export const listSessionBookings = asyncHandler(async (req, res) => {
   });
 });
 
-
 export const createBooking = asyncHandler(async (req, res) => {
   const { schedule_id } = req.body;
   const memberId        = req.user.id;
@@ -303,12 +311,10 @@ export const createBooking = asyncHandler(async (req, res) => {
          cs.start_time,
          c.capacity,
          c.class_name,
-         COUNT(cb.booking_id)::int AS current_bookings
+         (SELECT COUNT(booking_id)::int FROM class_bookings WHERE schedule_id = cs.schedule_id) AS current_bookings
        FROM class_schedules  cs
        JOIN classes          c  ON c.class_id     = cs.class_id
-       LEFT JOIN class_bookings cb ON cb.schedule_id = cs.schedule_id
        WHERE cs.schedule_id = $1
-       GROUP BY cs.schedule_id, cs.start_time, c.capacity, c.class_name
        FOR UPDATE OF cs`,
       [schedule_id]
     );
