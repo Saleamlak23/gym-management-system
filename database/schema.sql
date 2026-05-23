@@ -71,7 +71,6 @@ CREATE TABLE equipment_categories (
 -- =============================================================
 --  LEVEL 2 — Depend on Level 1 tables
 -- =============================================================
-
 CREATE TABLE members (
     member_id  SERIAL          PRIMARY KEY,
     first_name VARCHAR(50)     NOT NULL,
@@ -254,6 +253,6 @@ CREATE INDEX idx_pt_scheduled         ON personal_training_sessions(scheduled_at
 
 -- =============================================================
 --  DONE
---  All 16 tables created with constraints and indexes.
+--  All 15 tables created with constraints and indexes.
 --  Next: run database/seed.sql to populate with sample data.
 -- =============================================================

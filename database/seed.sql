@@ -117,19 +117,19 @@ INSERT INTO members (first_name, last_name, email, phone, password, is_active) V
 
 INSERT INTO staff (branch_id, role_id, first_name, last_name, email, password, is_active) VALUES
     -- Branch 1 — Addis Main
-    (1, 1, 'Alemayehu', 'Bekele',   'alem.bekele@gym.com',    '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),  -- Branch Manager
-    (1, 2, 'Tigabu',    'Wolde',    'tigabu.wolde@gym.com',   '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),  -- Trainer
-    (1, 5, 'Mekdes',    'Girma',    'mekdes.girma@gym.com',   '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),  -- Group Instructor
-    (1, 3, 'Yohannes',  'Teklu',    'yohannes.teklu@gym.com', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),  -- Receptionist
+    (1, 1, 'Alemayehu', 'Bekele', 'alem.bekele@gym.com',      '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Branch Manager
+    (1, 2, 'Tigabu',    'Wolde', 'tigabu.wolde@gym.com',      '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Trainer
+    (1, 5, 'Mekdes',    'Girma',    'mekdes.girma@gym.com',   '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Group Instructor
+    (1, 3, 'Yohannes',  'Teklu',    'yohannes.teklu@gym.com', '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Receptionist
 
     -- Branch 2 — Kazanchis
-    (2, 1, 'Birtukan',  'Alemu',    'birtukan.alemu@gym.com', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),  -- Branch Manager
-    (2, 2, 'Habtamu',   'Desta',    'habtamu.desta@gym.com',  '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),  -- Trainer
-    (2, 3, 'Selamawit', 'Tesfaye',  'selam.tesfaye@gym.com',  '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),  -- Receptionist
+    (2, 1, 'Birtukan',  'Alemu',    'birtukan.alemu@gym.com', '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Branch Manager
+    (2, 2, 'Habtamu',   'Desta',    'habtamu.desta@gym.com',  '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Trainer
+    (2, 3, 'Selamawit', 'Tesfaye',  'selam.tesfaye@gym.com',  '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Receptionist
 
     -- Branch 3 — Piassa
-    (3, 1, 'Tewodros',  'Haile',    'tewodros.haile@gym.com', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),  -- Branch Manager
-    (3, 2, 'Almaz',     'Seifu',    'almaz.seifu@gym.com',    '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE);  -- Trainer
+    (3, 1, 'Tewodros',  'Haile',    'tewodros.haile@gym.com', '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Branch Manager
+    (3, 2, 'Almaz',     'Seifu',    'almaz.seifu@gym.com',    '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE);  -- Trainer
 
 
 -- =============================================================
