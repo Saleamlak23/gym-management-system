@@ -85,7 +85,7 @@ export const login = asyncHandler(async (req, res) => {
   const memberResult = await query(
     `SELECT member_id AS id, first_name, last_name, email, phone, join_date, password
      FROM members
-     WHERE email = $1`,
+     WHERE LOWER(email) = LOWER($1)`,
     [email]
   );
 
@@ -109,7 +109,7 @@ export const login = asyncHandler(async (req, res) => {
          sr.role_name
        FROM staff s
        JOIN staff_roles sr ON s.role_id = sr.role_id
-       WHERE s.email = $1`,
+       WHERE LOWER(s.email) = LOWER($1)`,
       [email]
     );
 
