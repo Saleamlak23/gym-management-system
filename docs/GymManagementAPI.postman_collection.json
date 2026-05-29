@@ -1,0 +1,934 @@
+{
+  "info": {
+    "name": "Gym Management API",
+    "description": "Complete test collection for the Gym & Fitness Club Management System. Run tests in order — Auth first to get tokens.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url",      "value": "http://localhost:5000/api" },
+    { "key": "member_token",  "value": "" },
+    { "key": "staff_token",   "value": "" },
+    { "key": "manager_token", "value": "" }
+  ],
+  "item": [
+
+    {
+      "name": "00 - Health Check",
+      "item": [
+        {
+          "name": "GET / - Server alive",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:5000",
+            "description": "Checks the server is running. No auth needed."
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('API running', () => pm.expect(pm.response.json().status).to.eql('API running'));"
+            ]}
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "01 - Auth",
+      "item": [
+        {
+          "name": "POST /auth/register - new member",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Test\",\n  \"last_name\": \"Member\",\n  \"email\": \"test.member@email.com\",\n  \"password\": \"Password@123\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Has token', () => pm.expect(pm.response.json().data).to.have.property('token'));",
+              "pm.test('Success true', () => pm.expect(pm.response.json().success).to.be.true);",
+              "const token = pm.response.json().data?.token;",
+              "if (token) pm.collectionVariables.set('member_token', token);",
+              "pm.test('Token saved', () => pm.expect(pm.collectionVariables.get('member_token')).to.not.be.empty);"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /auth/register - duplicate email (should fail)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Test\",\n  \"last_name\": \"Member\",\n  \"email\": \"test.member@email.com\",\n  \"password\": \"Password@123\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 409 conflict', () => pm.response.to.have.status(409));",
+              "pm.test('Success false', () => pm.expect(pm.response.json().success).to.be.false);"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /auth/register - validation error (should fail)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"\",\n  \"email\": \"not-an-email\",\n  \"password\": \"short\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 422 validation', () => pm.response.to.have.status(422));",
+              "pm.test('Has errors array', () => pm.expect(pm.response.json()).to.have.property('errors'));"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /auth/login - as member",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test.member@email.com\",\n  \"password\": \"Password@123\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Role is member', () => pm.expect(pm.response.json().data.user.role).to.eql('member'));",
+              "const token = pm.response.json().data?.token;",
+              "if (token) pm.collectionVariables.set('member_token', token);"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /auth/login - as branch manager (seeded staff)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alem.bekele@gym.com\",\n  \"password\": \"Password@123\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Role is branch_manager', () => pm.expect(pm.response.json().data.user.role).to.eql('branch_manager'));",
+              "const token = pm.response.json().data?.token;",
+              "if (token) pm.collectionVariables.set('manager_token', token);"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /auth/login - as trainer (seeded staff)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"tigabu.wolde@gym.com\",\n  \"password\": \"Password@123\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Role is trainer', () => pm.expect(pm.response.json().data.user.role).to.eql('trainer'));",
+              "const token = pm.response.json().data?.token;",
+              "if (token) pm.collectionVariables.set('staff_token', token);"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /auth/login - wrong password (should fail)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test.member@email.com\",\n  \"password\": \"WrongPassword@999\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 401', () => pm.response.to.have.status(401));",
+              "pm.test('Success false', () => pm.expect(pm.response.json().success).to.be.false);"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /auth/me - get current user",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/auth/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{member_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has user object', () => pm.expect(pm.response.json().data).to.have.property('user'));",
+              "pm.test('Email matches', () => pm.expect(pm.response.json().data.user.email).to.eql('test.member@email.com'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /auth/me - no token (should fail)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/auth/me"
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 401', () => pm.response.to.have.status(401));"
+            ]}
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "02 - Members",
+      "item": [
+        {
+          "name": "GET /members - list all (manager token)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/members",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has members array', () => pm.expect(pm.response.json().data.members).to.be.an('array'));",
+              "pm.test('Has 20+ members from seed', () => pm.expect(pm.response.json().data.members.length).to.be.at.least(20));",
+              "pm.test('Has pagination', () => pm.expect(pm.response.json().data.pagination).to.exist);"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /members?search=Abebe - search filter",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/members?search=Abebe",
+              "query": [{ "key": "search", "value": "Abebe" }]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Search returns results', () => pm.expect(pm.response.json().data.members.length).to.be.at.least(1));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /members/1 - single member",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/members/1",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has member', () => pm.expect(pm.response.json().data.member).to.exist);",
+              "pm.test('Correct ID', () => pm.expect(pm.response.json().data.member.member_id).to.eql(1));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /members/9999 - not found (should fail)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/members/9999",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 404', () => pm.response.to.have.status(404));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /members/1/subscriptions - subscription history",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/members/1/subscriptions",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has subscriptions', () => pm.expect(pm.response.json().data.subscriptions).to.be.an('array'));",
+              "pm.test('Member 1 has subscriptions', () => pm.expect(pm.response.json().data.subscriptions.length).to.be.at.least(1));"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /members/1/subscriptions - active sub conflict (should fail)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/members/1/subscriptions",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{manager_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type_id\": 2,\n  \"start_date\": \"2025-06-01\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 409 - already has active sub', () => pm.response.to.have.status(409));"
+            ]}
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "03 - Payments",
+      "item": [
+        {
+          "name": "GET /payments - list all (manager token)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/payments",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has payments', () => pm.expect(pm.response.json().data.payments).to.be.an('array'));",
+              "pm.test('30 seed payments', () => pm.expect(pm.response.json().data.payments.length).to.be.at.least(30));"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /payments - record new payment",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/payments",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{manager_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": 1,\n  \"amount\": 40.00,\n  \"method\": \"cash\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Payment recorded', () => pm.expect(pm.response.json().data.payment).to.exist);",
+              "pm.test('Correct amount', () => pm.expect(parseFloat(pm.response.json().data.payment.amount)).to.eql(40));"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /payments - invalid method (should fail)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/payments",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{manager_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": 1,\n  \"amount\": 40.00,\n  \"method\": \"bitcoin\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 422 validation', () => pm.response.to.have.status(422));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /payments/summary - revenue report",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/payments/summary",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has total_revenue', () => pm.expect(pm.response.json().data.total_revenue).to.be.a('number'));",
+              "pm.test('Has by_method', () => pm.expect(pm.response.json().data.by_method).to.be.an('array'));",
+              "pm.test('Has by_month', () => pm.expect(pm.response.json().data.by_month).to.be.an('array'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /payments/member/1 - member payment history",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/payments/member/1",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has payments array', () => pm.expect(pm.response.json().data.payments).to.be.an('array'));",
+              "pm.test('Has total_spend', () => pm.expect(pm.response.json().data.total_spend).to.be.a('number'));"
+            ]}
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "04 - Classes & Bookings",
+      "item": [
+        {
+          "name": "GET /classes - list all templates",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/classes",
+            "header": [{ "key": "Authorization", "value": "Bearer {{member_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has 6 seed classes', () => pm.expect(pm.response.json().data.classes.length).to.eql(6));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /classes/schedules - upcoming sessions",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/classes/schedules",
+            "header": [{ "key": "Authorization", "value": "Bearer {{member_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has schedules', () => pm.expect(pm.response.json().data.schedules).to.be.an('array'));",
+              "pm.test('Has spots_remaining', () => { const s = pm.response.json().data.schedules; if(s.length > 0) pm.expect(s[0]).to.have.property('spots_remaining'); });"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /classes/schedules?branch_id=1&week=true - weekly timetable",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/classes/schedules?branch_id=1&week=true",
+              "query": [
+                { "key": "branch_id", "value": "1" },
+                { "key": "week", "value": "true" }
+              ]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{member_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /classes/bookings - book a class (member)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/classes/bookings",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{member_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schedule_id\": 11\n}"
+            },
+            "description": "Schedule 11 is a future session. Member token used."
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const status = pm.response.code;",
+              "pm.test('201 booked or 403 no sub or 409 conflict', () => pm.expect([201,403,409]).to.include(status));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /classes/bookings/mine - my bookings",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/classes/bookings/mine",
+            "header": [{ "key": "Authorization", "value": "Bearer {{member_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has upcoming array', () => pm.expect(pm.response.json().data.upcoming).to.be.an('array'));",
+              "pm.test('Has past array', () => pm.expect(pm.response.json().data.past).to.be.an('array'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /classes/schedules/1/bookings - session bookings (staff)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/classes/schedules/1/bookings",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has session info', () => pm.expect(pm.response.json().data.session).to.exist);",
+              "pm.test('Has bookings array', () => pm.expect(pm.response.json().data.bookings).to.be.an('array'));"
+            ]}
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "05 - Personal Training",
+      "item": [
+        {
+          "name": "GET /training - all sessions (manager)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/training",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has sessions', () => pm.expect(pm.response.json().data.sessions).to.be.an('array'));",
+              "pm.test('12 seed sessions', () => pm.expect(pm.response.json().data.sessions.length).to.be.at.least(12));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /training/trainer/2 - trainer schedule",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/training/trainer/2",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has trainer info', () => pm.expect(pm.response.json().data.trainer).to.exist);"
+            ]}
+          }]
+        },
+        {
+          "name": "PATCH /training/1/status - confirm session (manager)",
+          "request": {
+            "method": "PATCH",
+            "url": "{{base_url}}/training/1/status",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{manager_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const s = pm.response.code;",
+              "pm.test('200 updated or 409 invalid transition', () => pm.expect([200,409]).to.include(s));"
+            ]}
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "06 - Equipment",
+      "item": [
+        {
+          "name": "GET /equipment/categories - list categories",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/equipment/categories",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('4 seed categories', () => pm.expect(pm.response.json().data.categories.length).to.eql(4));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /equipment - list all equipment",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/equipment",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('15 seed items', () => pm.expect(pm.response.json().data.equipment.length).to.eql(15));",
+              "pm.test('Has maintenance info', () => pm.expect(pm.response.json().data.equipment[0]).to.have.property('last_service_date'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /equipment/overdue - overdue items",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/equipment/overdue",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has overdue array', () => pm.expect(pm.response.json().data.overdue_equipment).to.be.an('array'));",
+              "pm.test('Has thresholds', () => pm.expect(pm.response.json().data.thresholds_applied).to.exist);"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /equipment/4/maintenance - maintenance history",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/equipment/4/maintenance",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has logs', () => pm.expect(pm.response.json().data.maintenance_logs).to.be.an('array'));",
+              "pm.test('Has total_cost', () => pm.expect(pm.response.json().data.total_cost).to.be.a('number'));"
+            ]}
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "07 - Staff",
+      "item": [
+        {
+          "name": "GET /staff/roles - list all roles",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/staff/roles",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('5 seed roles', () => pm.expect(pm.response.json().data.roles.length).to.eql(5));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /staff - list all staff",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/staff",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('9 seed staff', () => pm.expect(pm.response.json().data.staff.length).to.eql(9));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /staff/2 - single staff member",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/staff/2",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has upcoming_classes', () => pm.expect(pm.response.json().data.staff).to.have.property('upcoming_classes'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /staff/2/schedule - instructor schedule",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/staff/2/schedule",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has schedule array', () => pm.expect(pm.response.json().data.schedule).to.be.an('array'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /staff/2/payroll - payroll estimate",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/staff/2/payroll",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has payroll object', () => pm.expect(pm.response.json().data.payroll).to.exist);",
+              "pm.test('Has estimated_pay', () => pm.expect(pm.response.json().data.payroll.estimated_pay).to.be.a('number'));"
+            ]}
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "08 - Attendance",
+      "item": [
+        {
+          "name": "POST /attendance/checkin - check in member 3 (has active sub)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/attendance/checkin",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{manager_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": 3,\n  \"branch_id\": 1\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const s = pm.response.code;",
+              "pm.test('201 checked in or 409 already open', () => pm.expect([201,409]).to.include(s));"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /attendance/checkin - member 13 (expired sub, should fail)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/attendance/checkin",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{manager_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": 13,\n  \"branch_id\": 1\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 403 - no active subscription', () => pm.response.to.have.status(403));"
+            ]}
+          }]
+        },
+        {
+          "name": "POST /attendance/checkout - check out member 3",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/attendance/checkout",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{manager_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": 3,\n  \"branch_id\": 1\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "const s = pm.response.code;",
+              "pm.test('200 checked out or 404 no open checkin', () => pm.expect([200,404]).to.include(s));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /attendance/today/1 - today's log branch 1",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/attendance/today/1",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has branch info', () => pm.expect(pm.response.json().data.branch).to.exist);",
+              "pm.test('Has currently_inside', () => pm.expect(pm.response.json().data.currently_inside).to.be.a('number'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /attendance/member/1 - member history",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/attendance/member/1",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has stats', () => pm.expect(pm.response.json().data.stats).to.exist);",
+              "pm.test('Has total_visits', () => pm.expect(pm.response.json().data.stats.total_visits).to.be.a('number'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /attendance/heatmap/1 - peak hours grid",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/attendance/heatmap/1",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Grid has 7 days', () => pm.expect(pm.response.json().data.grid.length).to.eql(7));",
+              "pm.test('Each day has 24 hours', () => pm.expect(pm.response.json().data.grid[0].hours.length).to.eql(24));"
+            ]}
+          }]
+        }
+      ]
+    },
+
+    {
+      "name": "09 - Analytics",
+      "item": [
+        {
+          "name": "GET /analytics/branch/1 - branch KPIs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/analytics/branch/1",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has today_checkins', () => pm.expect(pm.response.json().data.today_checkins).to.be.a('number'));",
+              "pm.test('Has equipment info', () => pm.expect(pm.response.json().data.equipment).to.exist);"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /analytics/revenue - revenue trend",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/analytics/revenue?group_by=month",
+              "query": [{ "key": "group_by", "value": "month" }]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has grand_total', () => pm.expect(pm.response.json().data.grand_total).to.be.a('number'));",
+              "pm.test('Has revenue array', () => pm.expect(pm.response.json().data.revenue).to.be.an('array'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /analytics/members/growth - signup trend",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/analytics/members/growth",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has monthly_growth', () => pm.expect(pm.response.json().data.monthly_growth).to.be.an('array'));"
+            ]}
+          }]
+        },
+        {
+          "name": "GET /analytics/classes/fillrate - class occupancy",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/analytics/classes/fillrate",
+            "header": [{ "key": "Authorization", "value": "Bearer {{manager_token}}" }]
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Has classes array', () => pm.expect(pm.response.json().data.classes).to.be.an('array'));"
+            ]}
+          }]
+        }
+      ]
+    }
+
+  ]
+}
