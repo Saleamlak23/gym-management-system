@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, Download } from 'lucide-react';
 import { PageWrapper } from '@/components/ui/PageWrapper';
 import { DataTable } from '@/components/ui/DataTable';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Member } from '@/types';
 import { membersService } from '@/services/members.service';
+import { useExportData } from '@/hooks/useExportData';
 
 export const MembersListPage: React.FC = () => {
   const navigate = useNavigate();
+  const { exportToCSV, exportToJSON } = useExportData();
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -86,7 +89,7 @@ export const MembersListPage: React.FC = () => {
   return (
     <PageWrapper title="Members" description="Manage gym members and their subscriptions">
       <div className="mb-6 space-y-4">
-        <div className="flex gap-4 flex-col sm:flex-row">
+        <div className="flex gap-4 flex-col sm:flex-row sm:items-end">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
             <Input
@@ -111,6 +114,28 @@ export const MembersListPage: React.FC = () => {
             <option value="cancelled">Cancelled</option>
             <option value="frozen">Frozen</option>
           </select>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportToCSV('members', members)}
+              className="flex items-center gap-2"
+              disabled={members.length === 0}
+            >
+              <Download className="h-4 w-4" />
+              CSV
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportToJSON('members', members)}
+              className="flex items-center gap-2"
+              disabled={members.length === 0}
+            >
+              <Download className="h-4 w-4" />
+              JSON
+            </Button>
+          </div>
         </div>
       </div>
 
