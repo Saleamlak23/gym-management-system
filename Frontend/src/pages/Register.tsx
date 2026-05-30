@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { getDefaultPathForRole } from '@/lib/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AlertCircle } from 'lucide-react';
@@ -36,8 +37,8 @@ export const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await register(formData.firstName, formData.lastName, formData.email, formData.password, formData.phone || undefined);
-      navigate('/member');
+      const response = await register(formData.firstName, formData.lastName, formData.email, formData.password, formData.phone || undefined);
+      navigate(getDefaultPathForRole(response?.data?.user?.role));
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
