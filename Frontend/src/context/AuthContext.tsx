@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { AuthUser } from '@/types';
+import { AuthResponse, AuthUser } from '@/types';
 import { authService } from '@/services/auth.service';
 import apiClient from '@/lib/api';
 
@@ -8,8 +8,8 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (firstName: string, lastName: string, email: string, password: string, phone?: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthResponse>;
+  register: (firstName: string, lastName: string, email: string, password: string, phone?: string) => Promise<AuthResponse>;
   logout: () => void;
 }
 
@@ -52,6 +52,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setToken(newToken);
         setUser(newUser);
       }
+      return response;
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -73,6 +74,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setToken(newToken);
         setUser(newUser);
       }
+      return response;
     } catch (error) {
       console.error('Register error:', error);
       throw error;

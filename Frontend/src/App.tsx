@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { getDefaultPathForRole } from '@/lib/navigation';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Sidebar } from '@/components/Sidebar';
@@ -31,6 +32,24 @@ const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
       </main>
     </div>
   );
+};
+
+const HomeRedirect = () => {
+  const { isAuthenticated, user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Navigate to={getDefaultPathForRole(user?.role)} replace />;
 };
 
 function App() {
@@ -104,7 +123,7 @@ function App() {
               />
 
               {/* Default redirect */}
-              <Route path="/" element={<Navigate to="/admin" replace />} />
+              <Route path="/" element={<HomeRedirect />} />
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
           </LayoutWrapper>
