@@ -180,7 +180,6 @@ function App() {
                 }
               />
 
-<<<<<<< HEAD
               {/* Branch Manager Routes */}
               <Route
                 path="/branch"
@@ -268,13 +267,8 @@ function App() {
               />
 
               {/* Default redirect & 404 */}
-              <Route path="/" element={<Navigate to="/admin" replace />} />
-              <Route path="*" element={<NotFound />} />
-=======
-              {/* Default redirect */}
               <Route path="/" element={<HomeRedirect />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
->>>>>>> dc6d59c4288d98785a3eed7bc628f93651a3c950
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </LayoutWrapper>
           <Toaster />
