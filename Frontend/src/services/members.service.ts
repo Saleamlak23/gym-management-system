@@ -56,3 +56,12 @@ export const membersService = {
     return response.data;
   },
 };
+
+// Export individual functions for convenience
+export const getMembers = membersService.getMembers;
+export const getMember = membersService.getMember;
+export const updateMember = membersService.updateMember;
+export const deleteMember = membersService.deleteMember;
+export const getSubscriptions = membersService.getSubscriptions;
+export const createSubscription = membersService.createSubscription;
+export const updateSubscriptionStatus = membersService.updateSubscriptionStatus;

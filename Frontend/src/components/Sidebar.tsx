@@ -11,12 +11,30 @@ export const Sidebar: React.FC = () => {
   const isActive = (path: string) => location.pathname.startsWith(path);
 
   const menuItems = [
+    // Admin routes
     { label: 'Dashboard', icon: BarChart3, path: '/admin', roles: ['enterprise_admin', 'branch_manager'] },
     { label: 'Members', icon: Users, path: '/admin/members', roles: ['enterprise_admin', 'branch_manager', 'staff'] },
-    { label: 'Staff', icon: Users, path: '/admin/staff', roles: ['enterprise_admin', 'branch_manager'] },
-    { label: 'Classes', icon: Calendar, path: '/admin/classes', roles: ['enterprise_admin', 'branch_manager', 'trainer'] },
+    { label: 'Staff', icon: Users, path: '/admin/staff', roles: ['enterprise_admin'] },
+    { label: 'Branches', icon: Users, path: '/admin/branches', roles: ['enterprise_admin'] },
+    { label: 'Classes', icon: Calendar, path: '/admin/classes', roles: ['enterprise_admin', 'branch_manager'] },
     { label: 'Equipment', icon: Wrench, path: '/admin/equipment', roles: ['enterprise_admin', 'branch_manager', 'staff'] },
+    { label: 'Payments', icon: BarChart3, path: '/admin/payments', roles: ['enterprise_admin', 'branch_manager'] },
     { label: 'Analytics', icon: BarChart3, path: '/admin/analytics', roles: ['enterprise_admin', 'branch_manager'] },
+
+    // Branch manager routes
+    { label: 'Branch Dashboard', icon: BarChart3, path: '/branch', roles: ['branch_manager'] },
+    { label: 'Class Schedule', icon: Calendar, path: '/branch/classes', roles: ['branch_manager'] },
+    { label: 'Attendance', icon: Users, path: '/branch/attendance', roles: ['branch_manager', 'staff'] },
+
+    // Staff routes
+    { label: 'Check-In Desk', icon: Users, path: '/staff/checkin', roles: ['staff'] },
+    { label: 'Training Sessions', icon: Dumbbell, path: '/staff/training', roles: ['staff', 'trainer'] },
+
+    // Member routes
+    { label: 'My Portal', icon: BarChart3, path: '/member', roles: ['member'] },
+    { label: 'My Bookings', icon: Calendar, path: '/member/bookings', roles: ['member'] },
+    { label: 'My Sessions', icon: Dumbbell, path: '/member/sessions', roles: ['member'] },
+    { label: 'My Payments', icon: BarChart3, path: '/member/payments', roles: ['member'] },
   ];
 
   const filteredMenuItems = menuItems.filter(item => item.roles.includes(user?.role || ''));

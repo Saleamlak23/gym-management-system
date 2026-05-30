@@ -5,15 +5,41 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Sidebar } from '@/components/Sidebar';
 import { Login } from '@/pages/Login';
 import { Register } from '@/pages/Register';
+import { NotFound } from '@/pages/NotFound';
+import { Unauthorized } from '@/pages/Unauthorized';
+import { Toaster } from '@/components/ui/toaster';
+
+// Admin Pages
 import { AdminDashboard } from '@/pages/AdminDashboard';
 import { MembersListPage } from '@/pages/admin/MembersListPage';
 import { MemberDetailPage } from '@/pages/admin/MemberDetailPage';
+import { BranchesPage } from '@/pages/admin/Branches';
+import { PaymentsPage } from '@/pages/admin/PaymentsPage';
+import { ClassesManagement } from '@/pages/admin/ClassesManagement';
+import { OnlinePaymentsPage } from '@/pages/admin/OnlinePayments';
 import { EquipmentPage } from '@/pages/admin/EquipmentPage';
-import { ClassesPage } from '@/pages/admin/ClassesPage';
-import { AnalyticsPage } from '@/pages/admin/AnalyticsPage';
 import { StaffPage } from '@/pages/admin/StaffPage';
-import { Unauthorized } from '@/pages/Unauthorized';
-import { Toaster } from '@/components/ui/toaster';
+import { AnalyticsPage } from '@/pages/admin/AnalyticsPage';
+
+// Branch Manager Pages
+import { BranchDashboard } from '@/pages/branch/BranchDashboard';
+import { ClassSchedule } from '@/pages/branch/ClassSchedule';
+import { Attendance } from '@/pages/branch/Attendance';
+
+// Staff Pages
+import { StaffHome } from '@/pages/staff/StaffHome';
+import { CheckInDesk } from '@/pages/staff/CheckInDesk';
+import { TrainingSessions } from '@/pages/staff/TrainingSessions';
+
+// Member Pages
+import { MemberPortal } from '@/pages/member/MemberPortal';
+import { MyBookings } from '@/pages/member/MyBookings';
+import { MySessions } from '@/pages/member/MySessions';
+import { MyPayments } from '@/pages/member/MyPayments';
+
+// Keep existing admin class page for compatibility
+import { ClassesPage } from '@/pages/admin/ClassesPage';
+
 import './App.css';
 
 const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -73,8 +99,32 @@ function App() {
               <Route
                 path="/admin/staff"
                 element={
-                  <ProtectedRoute allowedRoles={['enterprise_admin', 'branch_manager']}>
+                  <ProtectedRoute allowedRoles={['enterprise_admin']}>
                     <StaffPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/branches"
+                element={
+                  <ProtectedRoute allowedRoles={['enterprise_admin']}>
+                    <BranchesPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/payments"
+                element={
+                  <ProtectedRoute allowedRoles={['enterprise_admin', 'branch_manager']}>
+                    <PaymentsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/online-payments"
+                element={
+                  <ProtectedRoute allowedRoles={['enterprise_admin', 'branch_manager']}>
+                    <OnlinePaymentsPage />
                   </ProtectedRoute>
                 }
               />
@@ -95,6 +145,14 @@ function App() {
                 }
               />
               <Route
+                path="/admin/classes-management"
+                element={
+                  <ProtectedRoute allowedRoles={['enterprise_admin', 'branch_manager']}>
+                    <ClassesManagement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/admin/analytics"
                 element={
                   <ProtectedRoute allowedRoles={['enterprise_admin', 'branch_manager']}>
@@ -103,9 +161,95 @@ function App() {
                 }
               />
 
-              {/* Default redirect */}
+              {/* Branch Manager Routes */}
+              <Route
+                path="/branch"
+                element={
+                  <ProtectedRoute allowedRoles={['branch_manager']}>
+                    <BranchDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/branch/classes"
+                element={
+                  <ProtectedRoute allowedRoles={['branch_manager']}>
+                    <ClassSchedule />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/branch/attendance"
+                element={
+                  <ProtectedRoute allowedRoles={['branch_manager', 'staff']}>
+                    <Attendance />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Staff Routes */}
+              <Route
+                path="/staff"
+                element={
+                  <ProtectedRoute allowedRoles={['staff', 'trainer']}>
+                    <StaffHome />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/staff/checkin"
+                element={
+                  <ProtectedRoute allowedRoles={['staff']}>
+                    <CheckInDesk />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/staff/training"
+                element={
+                  <ProtectedRoute allowedRoles={['staff', 'trainer']}>
+                    <TrainingSessions />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Member Routes */}
+              <Route
+                path="/member"
+                element={
+                  <ProtectedRoute allowedRoles={['member']}>
+                    <MemberPortal />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/member/bookings"
+                element={
+                  <ProtectedRoute allowedRoles={['member']}>
+                    <MyBookings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/member/sessions"
+                element={
+                  <ProtectedRoute allowedRoles={['member']}>
+                    <MySessions />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/member/payments"
+                element={
+                  <ProtectedRoute allowedRoles={['member']}>
+                    <MyPayments />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Default redirect & 404 */}
               <Route path="/" element={<Navigate to="/admin" replace />} />
-              <Route path="*" element={<Navigate to="/login" replace />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </LayoutWrapper>
           <Toaster />

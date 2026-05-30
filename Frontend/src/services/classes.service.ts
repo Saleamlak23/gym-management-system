@@ -66,3 +66,11 @@ export const classesService = {
     return data;
   },
 };
+
+// Export individual functions for convenience
+export const getClasses = classesService.getClassTemplates;
+export const getClassSchedules = classesService.getSchedules;
+export const getMyBookings = classesService.getMyBookings;
+export const cancelBooking = classesService.cancelBooking;
+export const bookClass = classesService.bookClass;
+export const getScheduleBookings = classesService.getScheduleBookings;
