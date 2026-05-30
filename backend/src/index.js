@@ -32,6 +32,7 @@ import trainingRoutes from './routes/training.routes.js';
 import equipmentRoutes from './routes/equipment.routes.js';
 import attendanceRoutes from './routes/attendance.routes.js';
 import analyticsRoutes from './routes/analytics.routes.js';
+import chapaRoutes from './routes/chapa.routes';     // NEW
 
 // -------------------------------------------------------------
 //  App initialisation
@@ -53,6 +54,25 @@ app.use(
   })
 );
 
+// -------------------------------------------------------------
+//  RAW BODY CAPTURE — must come BEFORE express.json()
+//
+//  The Chapa webhook needs the raw request body string to verify
+//  the HMAC-SHA256 signature. Once express.json() parses the
+//  body the raw bytes are gone. This middleware ONLY runs for
+//  POST /api/chapa/webhook — all other routes use express.json().
+// -------------------------------------------------------------
+app.use(
+  '/api/chapa/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, _res, next) => {
+    req.rawBody = req.body.toString('utf8');
+    try { req.body = JSON.parse(req.rawBody); } catch { req.body = {}; }
+    next();
+  }
+);
+
+
 // Parse incoming JSON request bodies
 app.use(json());
 
@@ -66,6 +86,17 @@ if (process.env.NODE_ENV === 'development') {
     next();
   });
 }
+
+// -------------------------------------------------------------
+//  Dev request logger
+// -------------------------------------------------------------
+if (process.env.NODE_ENV === 'development') {
+  app.use((req, _res, next) => {
+    console.log(`[${new Date().toISOString()}]  ${req.method}  ${req.originalUrl}`);
+    next();
+  });
+}
+
 
 // -------------------------------------------------------------
 //  Health check — public, no auth required
@@ -94,6 +125,7 @@ app.use('/api/training',   trainingRoutes);
 app.use('/api/equipment',  equipmentRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/analytics',  analyticsRoutes);
+app.use('/api/chapa',      chapaRoutes);          // NEW
 
 // -------------------------------------------------------------
 //  404 handler — catches any request that did not match a route
@@ -116,6 +148,7 @@ app.listen(PORT, () => {
   console.log(`🚀  Server   : http://localhost:${PORT}`);
   console.log(`🌍  Env      : ${process.env.NODE_ENV || 'development'}`);
   console.log(`📡  Frontend : ${process.env.CLIENT_URL || 'http://localhost:5173'}`);
+  console.log(`💳  Chapa    : ${process.env.CHAPA_SECRET_KEY ? '✅ configured' : '⚠️  CHAPA_SECRET_KEY not set'}`);
   console.log('═══════════════════════════════════════════');
 });
 
