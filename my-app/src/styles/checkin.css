@@ -1,0 +1,122 @@
+.checkin-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+}
+
+.checkin-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.checkin-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: var(--dark-color);
+}
+
+.checkin-form {
+  margin-bottom: 2rem;
+}
+
+.checkin-input {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.checkin-button {
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 0.875rem 1.5rem;
+}
+
+.checkin-message {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.checkin-message.success {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.checkin-message.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.member-info {
+  text-align: center;
+  padding: 1.5rem 0 0 0;
+  border-top: 2px solid var(--border-color);
+}
+
+.member-avatar {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.member-info h2 {
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+  color: var(--dark-color);
+}
+
+.member-info .badge {
+  display: inline-block;
+  margin: 1rem 0;
+}
+
+.expiry-date {
+  color: var(--secondary-color);
+  margin: 0.5rem 0 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.checkin-btn,
+.checkout-btn {
+  flex: 1;
+  font-size: 1.1rem;
+  padding: 1rem;
+}
+
+.access-denied {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 2rem 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.access-denied p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .checkin-card {
+    max-width: 100%;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .checkin-title {
+    font-size: 1.5rem;
+  }
+}

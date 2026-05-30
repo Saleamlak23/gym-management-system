@@ -1,0 +1,13 @@
+.bookings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.booking-card {
+  border-left: 4px solid var(--primary-color);
+}
+
+.booking-card.past {
+  opacity: 0.7;
+}

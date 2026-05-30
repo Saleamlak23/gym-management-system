@@ -1,0 +1,133 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 28rem;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* enhanced card spacing and content layout */
+.auth-card {
+  border-radius: 1rem;
+}
+
+.auth-card .card-content {
+  padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center; /* center contents horizontally */
+}
+
+/* center the form inside the auth card and constrain its width */
+.auth-card form {
+  width: 100%;
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* make form groups take full width inside centered form */
+.auth-card .form-group {
+  width: 100%;
+}
+
+.auth-card .form-input {
+  width: 100%;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.auth-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(59,130,246,1), rgba(99,102,241,1));
+  box-shadow: 0 6px 18px rgba(99,102,241,0.18);
+}
+
+.auth-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.875rem;
+  color: var(--dark-color);
+}
+
+.auth-header p {
+  margin-top: 0.25rem;
+}
+
+.auth-header p {
+  margin: 0;
+  color: var(--secondary-color);
+  font-size: 0.95rem;
+}
+
+.auth-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.auth-button {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* nicer primary button look within auth pages */
+.auth-button.btn-primary {
+  background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.18);
+}
+
+.auth-button.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.auth-button:disabled {
+  opacity: 0.7;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.auth-footer p {
+  margin: 0;
+  color: var(--secondary-color);
+  font-size: 0.95rem;
+}
+
+.auth-footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.auth-footer a:hover {
+  color: #2563eb;
+}
