@@ -34,15 +34,16 @@ INSERT INTO branches (name, address, phone) VALUES
 
 
 -- =============================================================
---  STAFF ROLES  (5 rows)
+--  STAFF ROLES  (6 rows)
 -- =============================================================
 
 INSERT INTO staff_roles (role_name, hourly_rate) VALUES
-    ('Branch Manager',   25.00),
-    ('Personal Trainer', 18.00),
-    ('Receptionist',     10.00),
-    ('Cleaner',           7.50),
-    ('Group Instructor', 15.00);
+    ('Branch Manager',         25.00),
+    ('Personal Trainer',       18.00),
+    ('Receptionist',           10.00),
+    ('Cleaner',                 7.50),
+    ('Group Instructor',       15.00),
+    ('Enterprise Administrator', 35.00);
 
 
 -- =============================================================
@@ -118,6 +119,7 @@ INSERT INTO members (first_name, last_name, email, phone, password, is_active) V
 INSERT INTO staff (branch_id, role_id, first_name, last_name, email, password, is_active) VALUES
     -- Branch 1 — Addis Main
     (1, 1, 'Alemayehu', 'Bekele', 'alem.bekele@gym.com',      '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Branch Manager
+    (1, 6, 'Saba',      'Addis',   'admin@gym.com',            '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Enterprise Admin
     (1, 2, 'Tigabu',    'Wolde', 'tigabu.wolde@gym.com',      '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Trainer
     (1, 5, 'Mekdes',    'Girma',    'mekdes.girma@gym.com',   '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Group Instructor
     (1, 3, 'Yohannes',  'Teklu',    'yohannes.teklu@gym.com', '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Receptionist

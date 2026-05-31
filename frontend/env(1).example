@@ -1,0 +1,4 @@
+# Base URL for all API requests
+# In development the Vite proxy rewrites /api → http://localhost:5000/api
+# In production point this to your deployed backend
+VITE_API_URL=http://localhost:5000/api

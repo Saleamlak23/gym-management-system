@@ -1,0 +1,171 @@
+/* ============================================================
+   GymOS — Global Styles & Design Tokens
+   Iron & Neon aesthetic: dark metallic + neon lime
+   ============================================================ */
+
+/* ── Design Tokens ───────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg-base:      #080808;
+  --bg-surface:   #111111;
+  --bg-card:      #181818;
+  --bg-elevated:  #202020;
+  --bg-input:     #141414;
+
+  /* Borders */
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.14);
+  --border-focus: var(--neon);
+
+  /* Brand */
+  --neon:         #aaff00;
+  --neon-dim:     rgba(170, 255, 0, 0.12);
+  --neon-glow:    0 0 24px rgba(170, 255, 0, 0.35);
+
+  /* Semantic colours */
+  --success:      #22dd77;
+  --success-dim:  rgba(34, 221, 119, 0.12);
+  --danger:       #ff4545;
+  --danger-dim:   rgba(255, 69, 69, 0.12);
+  --warning:      #ffb800;
+  --warning-dim:  rgba(255, 184, 0, 0.12);
+  --info:         #38bdf8;
+  --info-dim:     rgba(56, 189, 248, 0.12);
+
+  /* Text */
+  --text-1:       #f0f0f0;
+  --text-2:       #888888;
+  --text-3:       #444444;
+
+  /* Typography */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Manrope', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius:    8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Motion */
+  --transition:    150ms ease;
+  --transition-md: 250ms ease;
+
+  /* Layout */
+  --sidebar-w: 240px;
+  --topbar-h:  60px;
+}
+
+/* ── Reset ───────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-base);
+  color: var(--text-1);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  outline: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--border-hover); border-radius: 2px; }
+
+/* ── App shell layout ────────────────────────────────────── */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding-top: var(--topbar-h);
+  min-width: 0;
+}
+
+/* ── Animations ──────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.fade-in {
+  animation: fadeIn 0.25s ease both;
+}
+
+/* ── Utility ─────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.neon {
+  color: var(--neon);
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+  }
+}
