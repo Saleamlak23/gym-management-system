@@ -88,26 +88,26 @@ INSERT INTO equipment_categories (category_name) VALUES
 -- =============================================================
 
 INSERT INTO members (first_name, last_name, email, phone, password, is_active) VALUES
-    ('Abebe',    'Girma',     'abebe.girma@email.com',     '+251-91-100-0001', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Tigist',   'Haile',     'tigist.haile@email.com',    '+251-91-100-0002', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Dawit',    'Tesfaye',   'dawit.tesfaye@email.com',   '+251-91-100-0003', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Selam',    'Bekele',    'selam.bekele@email.com',    '+251-91-100-0004', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Yonas',    'Alemu',     'yonas.alemu@email.com',     '+251-91-100-0005', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Meron',    'Tadesse',   'meron.tadesse@email.com',   '+251-91-100-0006', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Hiwot',    'Kebede',    'hiwot.kebede@email.com',    '+251-91-100-0007', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Biruk',    'Mulugeta',  'biruk.mulugeta@email.com',  '+251-91-100-0008', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Sara',     'Worku',     'sara.worku@email.com',      '+251-91-100-0009', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Mikias',   'Getachew',  'mikias.getachew@email.com', '+251-91-100-0010', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Lidiya',   'Seifu',     'lidiya.seifu@email.com',    '+251-91-100-0011', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Nahom',    'Desta',     'nahom.desta@email.com',     '+251-91-100-0012', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Bethlehem','Assefa',    'bethlehem.assefa@email.com','+251-91-100-0013', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Robel',    'Hailu',     'robel.hailu@email.com',     '+251-91-100-0014', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Eden',     'Mekonnen',  'eden.mekonnen@email.com',   '+251-91-100-0015', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Kaleb',    'Yimer',     'kaleb.yimer@email.com',     '+251-91-100-0016', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Feven',    'Girma',     'feven.girma@email.com',     '+251-91-100-0017', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Abel',     'Tsegaye',   'abel.tsegaye@email.com',    '+251-91-100-0018', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Rahel',    'Abebe',     'rahel.abebe@email.com',     '+251-91-100-0019', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE),
-    ('Yared',    'Solomon',   'yared.solomon@email.com',   '+251-91-100-0020', '$2b$12$KIXgH9zFkL3mNpQrStUvOeWjYbA4cD6eF8gH0iJ2kL4mN6oP8qR0s', TRUE);
+    ('Abebe',    'Girma',     'abebe.girma@email.com',     '+251-91-100-0001', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Tigist',   'Haile',     'tigist.haile@email.com',    '+251-91-100-0002', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Dawit',    'Tesfaye',   'dawit.tesfaye@email.com',   '+251-91-100-0003', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Selam',    'Bekele',    'selam.bekele@email.com',    '+251-91-100-0004', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Yonas',    'Alemu',     'yonas.alemu@email.com',     '+251-91-100-0005', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Meron',    'Tadesse',   'meron.tadesse@email.com',   '+251-91-100-0006', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Hiwot',    'Kebede',    'hiwot.kebede@email.com',    '+251-91-100-0007', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Biruk',    'Mulugeta',  'biruk.mulugeta@email.com',  '+251-91-100-0008', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Sara',     'Worku',     'sara.worku@email.com',      '+251-91-100-0009', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Mikias',   'Getachew',  'mikias.getachew@email.com', '+251-91-100-0010', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Lidiya',   'Seifu',     'lidiya.seifu@email.com',    '+251-91-100-0011', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Nahom',    'Desta',     'nahom.desta@email.com',     '+251-91-100-0012', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Bethlehem','Assefa',    'bethlehem.assefa@email.com','+251-91-100-0013', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Robel',    'Hailu',     'robel.hailu@email.com',     '+251-91-100-0014', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Eden',     'Mekonnen',  'eden.mekonnen@email.com',   '+251-91-100-0015', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Kaleb',    'Yimer',     'kaleb.yimer@email.com',     '+251-91-100-0016', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Feven',    'Girma',     'feven.girma@email.com',     '+251-91-100-0017', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Abel',     'Tsegaye',   'abel.tsegaye@email.com',    '+251-91-100-0018', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Rahel',    'Abebe',     'rahel.abebe@email.com',     '+251-91-100-0019', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),
+    ('Yared',    'Solomon',   'yared.solomon@email.com',   '+251-91-100-0020', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE);
 
 
 -- =============================================================
@@ -118,20 +118,20 @@ INSERT INTO members (first_name, last_name, email, phone, password, is_active) V
 
 INSERT INTO staff (branch_id, role_id, first_name, last_name, email, password, is_active) VALUES
     -- Branch 1 — Addis Main
-    (1, 1, 'Alemayehu', 'Bekele', 'alem.bekele@gym.com',      '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Branch Manager
-    (1, 6, 'Saba',      'Addis',   'admin@gym.com',            '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Enterprise Admin
-    (1, 2, 'Tigabu',    'Wolde', 'tigabu.wolde@gym.com',      '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Trainer
-    (1, 5, 'Mekdes',    'Girma',    'mekdes.girma@gym.com',   '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Group Instructor
-    (1, 3, 'Yohannes',  'Teklu',    'yohannes.teklu@gym.com', '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Receptionist
+    (1, 1, 'Alemayehu', 'Bekele', 'alem.bekele@gym.com',      '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),  -- Branch Manager
+    (1, 6, 'Saba',      'Addis',   'admin@gym.com',            '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),  -- Enterprise Admin
+    (1, 2, 'Tigabu',    'Wolde', 'tigabu.wolde@gym.com',      '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),  -- Trainer
+    (1, 5, 'Mekdes',    'Girma',    'mekdes.girma@gym.com',   '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),  -- Group Instructor
+    (1, 3, 'Yohannes',  'Teklu',    'yohannes.teklu@gym.com', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),  -- Receptionist
 
     -- Branch 2 — Kazanchis
-    (2, 1, 'Birtukan',  'Alemu',    'birtukan.alemu@gym.com', '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Branch Manager
-    (2, 2, 'Habtamu',   'Desta',    'habtamu.desta@gym.com',  '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Trainer
-    (2, 3, 'Selamawit', 'Tesfaye',  'selam.tesfaye@gym.com',  '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Receptionist
+    (2, 1, 'Birtukan',  'Alemu',    'birtukan.alemu@gym.com', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),  -- Branch Manager
+    (2, 2, 'Habtamu',   'Desta',    'habtamu.desta@gym.com',  '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),  -- Trainer
+    (2, 3, 'Selamawit', 'Tesfaye',  'selam.tesfaye@gym.com',  '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),  -- Receptionist
 
     -- Branch 3 — Piassa
-    (3, 1, 'Tewodros',  'Haile',    'tewodros.haile@gym.com', '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE),  -- Branch Manager
-    (3, 2, 'Almaz',     'Seifu',    'almaz.seifu@gym.com',    '$2b$12$4ttKMugP94l0CAEruA1m..7r8NRKUp3ZGgbDIhUBBnBFarpLxL0Eq', TRUE);  -- Trainer
+    (3, 1, 'Tewodros',  'Haile',    'tewodros.haile@gym.com', '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE),  -- Branch Manager
+    (3, 2, 'Almaz',     'Seifu',    'almaz.seifu@gym.com',    '$2b$12$xIsbCeEISCkhys62bFz8pOGyWKTntdnzHhHCTe0/AE1wnTu0UBOJS', TRUE);  -- Trainer
 
 
 -- =============================================================

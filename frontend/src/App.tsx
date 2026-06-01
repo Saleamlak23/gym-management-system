@@ -13,6 +13,7 @@ import Unauthorized from '@/pages/admin/Unauthorized'
 
 // ── Admin pages ────────────────────────────────────────────
 import AdminDashboard from '@/pages/admin/AdminDashboard'
+import BranchList     from '@/pages/admin/BranchList'
 import MemberList     from '@/pages/admin/MemberList'
 import MemberDetail   from '@/pages/admin/MemberDetail'
 import Payments       from '@/pages/admin/Payments'
@@ -81,6 +82,11 @@ function AppShell() {
           <Route path="/admin/staff" element={
             <ProtectedRoute roles={['enterprise_admin']}>
               <StaffList />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/branches" element={
+            <ProtectedRoute roles={['enterprise_admin']}>
+              <BranchList />
             </ProtectedRoute>
           } />
           <Route path="/admin/analytics" element={
@@ -164,7 +170,7 @@ function AppShell() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthProvider>
         <Routes>
           {/* Public routes */}

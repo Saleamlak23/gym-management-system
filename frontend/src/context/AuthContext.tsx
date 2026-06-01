@@ -4,11 +4,24 @@ import { useNavigate } from 'react-router-dom'
 import { AuthContext } from './auth.internal'
 import type { AuthUser } from '@/types'
 
-// ── Module-level token store ──────────────────────────────
-// Avoids localStorage per plan spec — survives re-renders
-// but clears on full page refresh (expected behaviour for
-// a management system where sessions shouldn't persist).
-let _token: string | null = null
+const AUTH_TOKEN_KEY = 'gymos_auth_token'
+const AUTH_USER_KEY = 'gymos_auth_user'
+
+function loadToken(): string | null {
+  return sessionStorage.getItem(AUTH_TOKEN_KEY)
+}
+
+function loadUser(): AuthUser | null {
+  const stored = sessionStorage.getItem(AUTH_USER_KEY)
+  if (!stored) return null
+
+  try {
+    return JSON.parse(stored) as AuthUser
+  } catch {
+    sessionStorage.removeItem(AUTH_USER_KEY)
+    return null
+  }
+}
 
 // ── Context ───────────────────────────────────────────────
 
@@ -16,26 +29,26 @@ let _token: string | null = null
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
-  const [user,    setUser]    = useState<AuthUser | null>(null)
-  const [token,   setToken]   = useState<string | null>(null)
+  const [user, setUser] = useState<AuthUser | null>(() => loadUser())
+  const [token, setToken] = useState<string | null>(() => loadToken())
   const loading = false
-  // No rehydration from storage — sessions start fresh on
-  // each page load as required by the plan.
 
   const login = useCallback((newToken: string, userData: AuthUser) => {
-    _token = newToken
+    sessionStorage.setItem(AUTH_TOKEN_KEY, newToken)
+    sessionStorage.setItem(AUTH_USER_KEY, JSON.stringify(userData))
     setToken(newToken)
     setUser(userData)
   }, [])
 
   const logout = useCallback(() => {
-    _token = null
+    sessionStorage.removeItem(AUTH_TOKEN_KEY)
+    sessionStorage.removeItem(AUTH_USER_KEY)
     setToken(null)
     setUser(null)
     navigate('/login', { replace: true })
   }, [navigate])
 
-  const getToken = useCallback((): string | null => _token, [])
+  const getToken = useCallback((): string | null => token ?? loadToken(), [token])
 
   return (
     <AuthContext.Provider value={{ user, token, loading, login, logout, getToken }}>
