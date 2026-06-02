@@ -47,6 +47,23 @@ export function validateMinLength(
   return undefined
 }
 
+/**
+ * Validate phone number in the format +251-XX-XXX-XXXX
+ */
+export function validatePhoneNumber(value: string): string | undefined {
+  if (!value) return 'Phone number is required'
+
+  const fullRe = /^\+251-\d{2}-\d{3}-\d{4}$/
+  const partRe1 = /^\d{2}-\d{3}-\d{4}$/ // 91-100-0001
+  const partRe2 = /^\d{9}$/ // 911000001
+
+  if (fullRe.test(value)) return undefined
+  if (partRe1.test(value)) return undefined
+  if (partRe2.test(value)) return undefined
+
+  return "Enter phone as 91-100-0001 (country code +251 will be added)"
+}
+
 // ── Date ──────────────────────────────────────────────────
 
 /**

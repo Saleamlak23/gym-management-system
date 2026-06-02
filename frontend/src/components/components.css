@@ -114,6 +114,19 @@
 
 .input-field::placeholder { color: var(--text-3); }
 
+/* Phone prefix support */
+.input-prefix-wrap { position: relative; }
+.input-prefix {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-2);
+  font-weight: 700;
+  pointer-events: none;
+}
+.input-field.with-prefix { padding-left: 96px; }
+
 .input-field--error { border-color: var(--danger) !important; }
 
 .input-field:disabled {

@@ -52,10 +52,11 @@ router.post(
       .withMessage('Password must contain at least one number'),
 
     body('phone')
-      .optional()
       .trim()
-      .isMobilePhone()
-      .withMessage('Must be a valid phone number'),
+      .notEmpty()
+      .withMessage('Phone is required')
+      .matches(/^\+251-\d{2}-\d{3}-\d{4}$/)
+      .withMessage('Phone must be in +251-XX-XXX-XXXX format'),
   ],
   validate,
   register

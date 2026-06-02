@@ -8,6 +8,7 @@ import {
   validatePassword,
   validatePasswordMatch,
   validateRequired,
+  validatePhoneNumber,
   validateForm,
   isValid,
 } from '@/utils/validators'
@@ -19,6 +20,7 @@ interface FormState {
   email: string
   password: string
   confirm_password: string
+  phone: string
 }
 
 interface FormErrors {
@@ -27,6 +29,7 @@ interface FormErrors {
   email?: string
   password?: string
   confirm_password?: string
+  phone?: string
 }
 
 export default function Register() {
@@ -39,6 +42,7 @@ export default function Register() {
     email: '',
     password: '',
     confirm_password: '',
+    phone: '',
   })
   const [errors, setErrors]     = useState<FormErrors>({})
   const [apiError, setApiError] = useState('')
@@ -58,6 +62,7 @@ export default function Register() {
         last_name:  validateRequired,
         email:      validateEmail,
         password:   validatePassword,
+        phone:      validatePhoneNumber,
       }),
     }
 
@@ -74,11 +79,29 @@ export default function Register() {
     setApiError('')
 
     try {
+      // Normalize phone: accept 91-100-0001 or 911000001 and format as +251-91-100-0001
+      const raw = form.phone.trim()
+      const fullRe = /^\+251-\d{2}-\d{3}-\d{4}$/
+      let phoneToSend = raw
+
+      if (!fullRe.test(raw)) {
+        const digits = raw.replace(/\D/g, '')
+        if (digits.length === 9) {
+          // format as XX-XXX-XXXX
+          const national = `${digits.slice(0,2)}-${digits.slice(2,5)}-${digits.slice(5,9)}`
+          phoneToSend = `+251-${national}`
+        } else {
+          // fallback: just prepend +251- to what user typed
+          phoneToSend = `+251-${raw}`
+        }
+      }
+
       const { token, user } = await registerUser({
         first_name: form.first_name.trim(),
         last_name:  form.last_name.trim(),
         email:      form.email.trim(),
         password:   form.password,
+        phone:      phoneToSend,
       })
       login(token, user)
       navigate('/member', { replace: true })
@@ -151,6 +174,34 @@ export default function Register() {
             required
           />
 
+          {/* Phone input placed full-width (same as Email). User types 911000001 or 91-100-0001; +251- prefix is shown */}
+          <div className="input-wrap">
+            <label className="input-label" htmlFor="phone">
+              Phone
+              <span className="input-required">*</span>
+            </label>
+
+            <div className="input-prefix-wrap">
+              <span className="input-prefix">+251</span>
+              <input
+                id="phone"
+                className={`input-field with-prefix${errors.phone ? ' input-field--error' : ''}`}
+                placeholder="911000001"
+                value={form.phone}
+                onChange={set('phone')}
+                autoComplete="tel"
+                required
+              />
+            </div>
+
+            {errors.phone && (
+              <span id={`phone-error`} className="input-error" role="alert" aria-live="polite">
+                ⚠ {errors.phone}
+              </span>
+            )}
+          </div>
+
+          
           <Input
             label="Password"
             type="password"
