@@ -57,10 +57,11 @@ export default function StaffList() {
     setLoading(true)
     setError('')
     try {
+      const roleId = roleFilter !== 'all' ? Number(roleFilter) : undefined
       const [s, r] = await Promise.all([
         getStaff({
           search:  debounced  || undefined,
-          role_id: roleFilter !== 'all' ? Number(roleFilter) : undefined,
+          role_id: Number.isInteger(roleId) ? roleId : undefined,
         }),
         getRoles(),
       ])

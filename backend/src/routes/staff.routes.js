@@ -22,7 +22,7 @@
 // =============================================================
 
 import { Router } from 'express';
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 
 import validate from '../middleware/validate.middleware.js';
 import { protect, authorize } from '../middleware/auth.middleware.js';
@@ -106,6 +106,18 @@ router.put(
 // -------------------------------------------------------------
 router.get(
   '/',
+  [
+    query('branch_id')
+      .optional()
+      .isInt({ min: 1 })
+      .withMessage('Branch ID must be a positive integer'),
+
+    query('role_id')
+      .optional()
+      .isInt({ min: 1 })
+      .withMessage('Role ID must be a positive integer'),
+  ],
+  validate,
   authorize('enterprise_admin', 'branch_manager'),
   list
 );

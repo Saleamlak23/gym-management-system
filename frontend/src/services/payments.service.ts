@@ -1,6 +1,11 @@
 import api from './api'
 import type { Payment, PaymentMethod, PaymentSummary } from '@/types'
-
+function normalizePayment(payment: Payment): Payment {
+  return {
+    ...payment,
+    created_at: payment.created_at ?? payment.payment_date,
+  }
+}
 // ── Shapes ────────────────────────────────────────────────
 
 export interface GetPaymentsParams {
@@ -33,7 +38,7 @@ export interface GetSummaryParams {
  */
 export async function getPayments(params?: GetPaymentsParams): Promise<Payment[]> {
   const res = await api.get<{ data: { payments: Payment[] } }>('/payments', { params })
-  return res.data.data.payments
+  return res.data.data.payments.map(normalizePayment)
 }
 
 /**
@@ -45,7 +50,7 @@ export async function createPayment(
   payload: CreatePaymentPayload,
 ): Promise<Payment> {
   const res = await api.post<{ data: { payment: Payment } }>('/payments', payload)
-  return res.data.data.payment
+  return normalizePayment(res.data.data.payment)
 }
 
 /**
@@ -55,7 +60,7 @@ export async function createPayment(
  */
 export async function getMemberPayments(memberId: number): Promise<Payment[]> {
   const res = await api.get<{ data: { payments: Payment[] } }>(`/payments/member/${memberId}`)
-  return res.data.data.payments
+  return res.data.data.payments.map(normalizePayment)
 }
 
 /**

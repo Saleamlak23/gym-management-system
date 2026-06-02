@@ -122,6 +122,13 @@ img {
   min-width: 0;
 }
 
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 20;
+}
+
 /* ── Animations ──────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
@@ -168,4 +175,5 @@ img {
   .main-content {
     margin-left: 0;
   }
+
 }

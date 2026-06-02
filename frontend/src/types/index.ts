@@ -130,7 +130,8 @@ export interface Payment {
   amount: number
   method: PaymentMethod
   note?: string
-  created_at: string
+  payment_date: string
+  created_at?: string
 }
 
 export interface PaymentSummary {

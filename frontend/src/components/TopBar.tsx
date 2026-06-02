@@ -3,20 +3,21 @@ import { initials, titleCase } from '@/utils/formatters'
 import './components.css'
 
 interface Props {
+  mobileOpen: boolean
   onMenuClick: () => void
 }
 
-export default function TopBar({ onMenuClick }: Props) {
+export default function TopBar({ mobileOpen, onMenuClick }: Props) {
   const { user } = useAuth()
 
   return (
     <header className="topbar">
       {/* Left — mobile hamburger */}
       <button
-        className="btn btn--ghost btn--sm"
+        className="btn btn--ghost btn--sm topbar__menu"
         onClick={onMenuClick}
         aria-label="Toggle navigation menu"
-        style={{ display: 'none' }} // shown via CSS on mobile
+        aria-expanded={mobileOpen}
       >
         ☰
       </button>

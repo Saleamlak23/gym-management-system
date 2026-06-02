@@ -103,16 +103,23 @@ export const updateRole = asyncHandler(async (req, res) => {
 
 
 export const list = asyncHandler(async (req, res) => {
-  const branchId = req.query.branch_id || '';
-  const roleId   = req.query.role_id   || '';
+  const branchId = Number(req.query.branch_id);
+  const roleId   = Number(req.query.role_id);
   const isActive = req.query.is_active !== 'false'; // defaults to active only
 
   const filters = [`s.is_active = $1`];
   const params  = [isActive];
   let   pIndex  = 2;
 
-  if (branchId) { filters.push(`s.branch_id = $${pIndex++}`); params.push(branchId); }
-  if (roleId)   { filters.push(`s.role_id   = $${pIndex++}`); params.push(roleId);   }
+  if (Number.isInteger(branchId) && branchId > 0) {
+    filters.push(`s.branch_id = $${pIndex++}`)
+    params.push(branchId)
+  }
+
+  if (Number.isInteger(roleId) && roleId > 0) {
+    filters.push(`s.role_id   = $${pIndex++}`)
+    params.push(roleId)
+  }
 
   const { rows } = await query(
     `SELECT

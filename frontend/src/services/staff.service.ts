@@ -101,9 +101,13 @@ export async function updateStaff(
 export async function getRoles(): Promise<StaffRole[]> {
   const res = await api.get<{ data: any }>('/staff/roles')
   const raw = res.data.data || {}
-  if (Array.isArray(raw)) return raw
-  if (Array.isArray(raw.roles)) return raw.roles
-  return []
+  const roles = Array.isArray(raw) ? raw : Array.isArray(raw.roles) ? raw.roles : []
+
+  return roles.map((role: any) => ({
+    id:          role.id ?? role.role_id,
+    role_name:   role.role_name,
+    hourly_rate: role.hourly_rate,
+  }))
 }
 
 /**

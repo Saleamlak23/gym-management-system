@@ -15,6 +15,7 @@ export default function Attendance() {
   const branchId = user?.branch_id ?? 1
 
   const [records, setRecords] = useState<AttendanceRecord[]>([])
+  const [branchName, setBranchName] = useState('')
   const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState('')
   const [date,    setDate]    = useState(toISODate(new Date()))
@@ -23,9 +24,10 @@ export default function Attendance() {
     setLoading(true)
     setError('')
     try {
-      const data = await getBranchAttendance(branchId)
+      const response = await getBranchAttendance(branchId)
+      setBranchName(response.branch?.branch_name || `Branch ${branchId}`)
       // Filter client-side by selected date
-      const filtered = data.filter((r) => r.check_in.startsWith(date))
+      const filtered = response.attendance.filter((r) => r.check_in.startsWith(date))
       setRecords(filtered)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load attendance')

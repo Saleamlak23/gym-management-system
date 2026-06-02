@@ -140,18 +140,18 @@ INSERT INTO staff (branch_id, role_id, first_name, last_name, email, password, i
 
 INSERT INTO subscriptions (member_id, type_id, start_date, end_date, status) VALUES
     -- Active subscriptions (status = 'active', end_date in the future)
-    (1,  3, '2025-03-01', '2025-05-29', 'active'),    -- Abebe    — Quarterly
-    (2,  2, '2025-04-15', '2025-05-15', 'active'),    -- Tigist   — Monthly
-    (3,  4, '2025-01-01', '2025-12-31', 'active'),    -- Dawit    — Annual
-    (4,  2, '2025-05-01', '2025-05-31', 'active'),    -- Selam    — Monthly
-    (5,  3, '2025-02-15', '2025-05-15', 'active'),    -- Yonas    — Quarterly
-    (6,  4, '2024-12-01', '2025-11-30', 'active'),    -- Meron    — Annual
-    (7,  2, '2025-05-10', '2025-06-09', 'active'),    -- Hiwot    — Monthly
-    (8,  3, '2025-03-20', '2025-06-17', 'active'),    -- Biruk    — Quarterly
-    (9,  4, '2025-01-15', '2026-01-14', 'active'),    -- Sara     — Annual
-    (10, 2, '2025-05-05', '2025-06-04', 'active'),    -- Mikias   — Monthly
-    (11, 1, '2025-05-17', '2025-05-18', 'active'),    -- Lidiya   — Day Pass
-    (12, 2, '2025-04-20', '2025-05-20', 'active'),    -- Nahom    — Monthly
+    (1,  3, CURRENT_DATE - INTERVAL '60 days', CURRENT_DATE + INTERVAL '30 days', 'active'),    -- Abebe    — Quarterly
+    (2,  2, CURRENT_DATE - INTERVAL '30 days', CURRENT_DATE + INTERVAL '15 days', 'active'),    -- Tigist   — Monthly
+    (3,  4, CURRENT_DATE - INTERVAL '120 days', CURRENT_DATE + INTERVAL '210 days', 'active'),  -- Dawit    — Annual
+    (4,  2, CURRENT_DATE - INTERVAL '10 days', CURRENT_DATE + INTERVAL '21 days', 'active'),    -- Selam    — Monthly
+    (5,  3, CURRENT_DATE - INTERVAL '70 days', CURRENT_DATE + INTERVAL '20 days', 'active'),    -- Yonas    — Quarterly
+    (6,  4, CURRENT_DATE - INTERVAL '180 days', CURRENT_DATE + INTERVAL '180 days', 'active'),  -- Meron    — Annual
+    (7,  2, CURRENT_DATE - INTERVAL '25 days', CURRENT_DATE + INTERVAL '15 days', 'active'),    -- Hiwot    — Monthly
+    (8,  3, CURRENT_DATE - INTERVAL '80 days', CURRENT_DATE + INTERVAL '30 days', 'active'),    -- Biruk    — Quarterly
+    (9,  4, CURRENT_DATE - INTERVAL '200 days', CURRENT_DATE + INTERVAL '250 days', 'active'),  -- Sara     — Annual
+    (10, 2, CURRENT_DATE - INTERVAL '20 days', CURRENT_DATE + INTERVAL '14 days', 'active'),   -- Mikias   — Monthly
+    (11, 1, CURRENT_DATE - INTERVAL '1 days', CURRENT_DATE + INTERVAL '1 days', 'active'),     -- Lidiya   — Day Pass
+    (12, 2, CURRENT_DATE - INTERVAL '35 days', CURRENT_DATE + INTERVAL '15 days', 'active'),   -- Nahom    — Monthly
 
     -- Expired subscriptions (end_date in the past)
     (13, 2, '2025-02-01', '2025-03-03', 'expired'),   -- Bethlehem — Monthly
@@ -180,38 +180,43 @@ INSERT INTO subscriptions (member_id, type_id, start_date, end_date, status) VAL
 -- =============================================================
 
 INSERT INTO payments (member_id, amount, payment_date, method) VALUES
-    (1,  110.00, '2025-03-01 09:15:00', 'card'),
-    (2,   40.00, '2025-04-15 10:30:00', 'cash'),
-    (3,  380.00, '2025-01-01 08:00:00', 'bank_transfer'),
-    (4,   40.00, '2025-05-01 11:00:00', 'mobile_money'),
-    (5,  110.00, '2025-02-15 09:45:00', 'card'),
-    (6,  380.00, '2024-12-01 14:00:00', 'bank_transfer'),
-    (7,   40.00, '2025-05-10 10:00:00', 'cash'),
-    (8,  110.00, '2025-03-20 13:20:00', 'card'),
-    (9,  380.00, '2025-01-15 09:00:00', 'bank_transfer'),
-    (10,  40.00, '2025-05-05 11:30:00', 'mobile_money'),
-    (11,   5.00, '2025-05-17 08:30:00', 'cash'),
-    (12,  40.00, '2025-04-20 10:15:00', 'card'),
-    (13,  40.00, '2025-02-01 09:00:00', 'cash'),
-    (14, 110.00, '2024-11-01 10:45:00', 'card'),
-    (15,  40.00, '2025-01-10 08:30:00', 'mobile_money'),
-    (16, 380.00, '2024-05-01 09:15:00', 'bank_transfer'),
-    (17,  40.00, '2025-03-01 11:00:00', 'card'),
-    (18, 110.00, '2025-01-01 09:30:00', 'cash'),
-    (19, 380.00, '2024-10-01 10:00:00', 'bank_transfer'),
-    (20,  40.00, '2025-04-01 11:45:00', 'card'),
-    -- Historical payments for members with multiple subscriptions
-    (1,   40.00, '2024-12-01 09:00:00', 'cash'),
-    (3,   40.00, '2024-07-01 10:30:00', 'mobile_money'),
-    (5,   40.00, '2024-11-01 09:15:00', 'card'),
-    (6,  110.00, '2024-09-01 14:30:00', 'bank_transfer'),
-    (9,   40.00, '2024-10-01 09:00:00', 'cash'),
-    -- Personal training top-up payments
-    (2,   25.00, '2025-04-20 09:00:00', 'cash'),
-    (4,   25.00, '2025-05-03 10:00:00', 'card'),
-    (7,   25.00, '2025-05-12 11:00:00', 'mobile_money'),
-    (10,  25.00, '2025-05-06 09:30:00', 'cash'),
-    (12,  25.00, '2025-04-22 10:15:00', 'card');
+    -- Current month payments
+    (1,  110.00, CURRENT_DATE::TIMESTAMP + INTERVAL '9 hours 15 minutes', 'card'),
+    (2,   40.00, CURRENT_DATE::TIMESTAMP + INTERVAL '10 hours 30 minutes', 'cash'),
+    (3,  380.00, (CURRENT_DATE - INTERVAL '5 days')::TIMESTAMP + INTERVAL '8 hours', 'bank_transfer'),
+    (4,   40.00, (CURRENT_DATE - INTERVAL '3 days')::TIMESTAMP + INTERVAL '11 hours', 'mobile_money'),
+    (5,  110.00, (CURRENT_DATE - INTERVAL '8 days')::TIMESTAMP + INTERVAL '9 hours 45 minutes', 'card'),
+    (6,  380.00, (CURRENT_DATE - INTERVAL '1 day')::TIMESTAMP + INTERVAL '14 hours', 'bank_transfer'),
+    (7,   40.00, (CURRENT_DATE - INTERVAL '2 days')::TIMESTAMP + INTERVAL '10 hours', 'cash'),
+    (8,  110.00, (CURRENT_DATE - INTERVAL '4 days')::TIMESTAMP + INTERVAL '13 hours 20 minutes', 'card'),
+    (9,  380.00, (CURRENT_DATE - INTERVAL '6 days')::TIMESTAMP + INTERVAL '9 hours', 'bank_transfer'),
+    (10,  40.00, (CURRENT_DATE - INTERVAL '7 days')::TIMESTAMP + INTERVAL '11 hours 30 minutes', 'mobile_money'),
+    (11,   5.00, CURRENT_DATE::TIMESTAMP + INTERVAL '8 hours 30 minutes', 'cash'),
+    (12,  40.00, (CURRENT_DATE - INTERVAL '1 day')::TIMESTAMP + INTERVAL '10 hours 15 minutes', 'card'),
+    
+    -- Previous month and historical payments
+    (13,  40.00, (CURRENT_DATE - INTERVAL '35 days')::TIMESTAMP + INTERVAL '9 hours', 'cash'),
+    (14, 110.00, (CURRENT_DATE - INTERVAL '60 days')::TIMESTAMP + INTERVAL '10 hours 45 minutes', 'card'),
+    (15,  40.00, (CURRENT_DATE - INTERVAL '90 days')::TIMESTAMP + INTERVAL '8 hours 30 minutes', 'mobile_money'),
+    (16, 380.00, (CURRENT_DATE - INTERVAL '180 days')::TIMESTAMP + INTERVAL '9 hours 15 minutes', 'bank_transfer'),
+    (17,  40.00, (CURRENT_DATE - INTERVAL '45 days')::TIMESTAMP + INTERVAL '11 hours', 'card'),
+    (18, 110.00, (CURRENT_DATE - INTERVAL '120 days')::TIMESTAMP + INTERVAL '9 hours 30 minutes', 'cash'),
+    (19, 380.00, (CURRENT_DATE - INTERVAL '200 days')::TIMESTAMP + INTERVAL '10 hours', 'bank_transfer'),
+    (20,  40.00, (CURRENT_DATE - INTERVAL '70 days')::TIMESTAMP + INTERVAL '11 hours 45 minutes', 'card'),
+    
+    -- Historical payments for members with multiple subscriptions (last 3 months)
+    (1,   40.00, (CURRENT_DATE - INTERVAL '50 days')::TIMESTAMP + INTERVAL '9 hours', 'cash'),
+    (3,   40.00, (CURRENT_DATE - INTERVAL '100 days')::TIMESTAMP + INTERVAL '10 hours 30 minutes', 'mobile_money'),
+    (5,   40.00, (CURRENT_DATE - INTERVAL '65 days')::TIMESTAMP + INTERVAL '9 hours 15 minutes', 'card'),
+    (6,  110.00, (CURRENT_DATE - INTERVAL '140 days')::TIMESTAMP + INTERVAL '14 hours 30 minutes', 'bank_transfer'),
+    (9,   40.00, (CURRENT_DATE - INTERVAL '150 days')::TIMESTAMP + INTERVAL '9 hours', 'cash'),
+    
+    -- Personal training top-up payments (current month)
+    (2,   25.00, (CURRENT_DATE - INTERVAL '2 days')::TIMESTAMP + INTERVAL '9 hours', 'cash'),
+    (4,   25.00, (CURRENT_DATE - INTERVAL '5 days')::TIMESTAMP + INTERVAL '10 hours', 'card'),
+    (7,   25.00, (CURRENT_DATE - INTERVAL '1 day')::TIMESTAMP + INTERVAL '11 hours', 'mobile_money'),
+    (10,  25.00, (CURRENT_DATE - INTERVAL '3 days')::TIMESTAMP + INTERVAL '9 hours 30 minutes', 'cash'),
+    (12,  25.00, CURRENT_DATE::TIMESTAMP + INTERVAL '10 hours 15 minutes', 'card');
 
 
 -- =============================================================
@@ -264,24 +269,24 @@ INSERT INTO maintenance_logs (equipment_id, service_date, description, cost) VAL
 
 INSERT INTO class_schedules (class_id, branch_id, instructor_id, start_time, end_time) VALUES
     -- Branch 1 — this week
-    (1, 1, 3, '2025-05-19 07:00:00', '2025-05-19 08:00:00'),  -- Yoga,     Mon morning,  Mekdes
-    (3, 1, 3, '2025-05-19 18:00:00', '2025-05-19 19:00:00'),  -- HIIT,     Mon evening,  Mekdes
-    (2, 1, 2, '2025-05-20 06:30:00', '2025-05-20 07:30:00'),  -- Spinning, Tue morning,  Tigabu
-    (5, 1, 3, '2025-05-21 17:30:00', '2025-05-21 18:30:00'),  -- Zumba,    Wed evening,  Mekdes
-    (6, 1, 2, '2025-05-22 06:30:00', '2025-05-22 07:30:00'),  -- Boxing,   Thu morning,  Tigabu
+    (1, 1, 3, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '0 days 07:00:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '0 days 08:00:00')),  -- Yoga,     Mon morning,  Mekdes
+    (3, 1, 3, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '0 days 18:00:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '0 days 19:00:00')),  -- HIIT,     Mon evening,  Mekdes
+    (2, 1, 2, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '1 day 06:30:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '1 day 07:30:00')),  -- Spinning, Tue morning,  Tigabu
+    (5, 1, 3, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '2 days 17:30:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '2 days 18:30:00')),  -- Zumba,    Wed evening,  Mekdes
+    (6, 1, 2, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '3 days 06:30:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '3 days 07:30:00')),  -- Boxing,   Thu morning,  Tigabu
 
     -- Branch 2 — this week
-    (4, 2, 6, '2025-05-19 09:00:00', '2025-05-19 10:00:00'),  -- Pilates,  Mon morning,  Habtamu
-    (1, 2, 6, '2025-05-21 07:00:00', '2025-05-21 08:00:00'),  -- Yoga,     Wed morning,  Habtamu
-    (3, 2, 6, '2025-05-23 17:00:00', '2025-05-23 18:00:00'),  -- HIIT,     Fri evening,  Habtamu
+    (4, 2, 6, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '0 days 09:00:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '0 days 10:00:00')),  -- Pilates,  Mon morning,  Habtamu
+    (1, 2, 6, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '2 days 07:00:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '2 days 08:00:00')),  -- Yoga,     Wed morning,  Habtamu
+    (3, 2, 6, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '4 days 17:00:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '4 days 18:00:00')),  -- HIIT,     Fri evening,  Habtamu
 
     -- Branch 3 — this week
-    (2, 3, 9, '2025-05-20 07:00:00', '2025-05-20 08:00:00'),  -- Spinning, Tue morning,  Almaz
-    (5, 3, 9, '2025-05-22 18:00:00', '2025-05-22 19:00:00'),  -- Zumba,    Thu evening,  Almaz
+    (2, 3, 9, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '1 day 07:00:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '1 day 08:00:00')),  -- Spinning, Tue morning,  Almaz
+    (5, 3, 9, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '3 days 18:00:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '3 days 19:00:00')),  -- Zumba,    Thu evening,  Almaz
 
     -- Next week
-    (1, 1, 3, '2025-05-26 07:00:00', '2025-05-26 08:00:00'),  -- Yoga,     Next Mon,     Mekdes
-    (3, 1, 2, '2025-05-27 18:00:00', '2025-05-27 19:00:00');  -- HIIT,     Next Tue,     Tigabu
+    (1, 1, 3, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '7 days 07:00:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '7 days 08:00:00')),  -- Yoga,     Next Mon,     Mekdes
+    (3, 1, 2, (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '8 days 18:00:00'), (DATE_TRUNC('week', CURRENT_DATE) + INTERVAL '8 days 19:00:00'));  -- HIIT,     Next Tue,     Tigabu
 
 
 -- =============================================================
@@ -401,8 +406,11 @@ INSERT INTO attendance (member_id, branch_id, check_in, check_out) VALUES
     (5,  2, '2025-04-25 09:00:00', '2025-04-25 10:30:00'),
     (7,  1, '2025-04-25 07:00:00', '2025-04-25 08:15:00'),
     -- Open attendance record (checked in, not yet checked out — today)
-    (2,  1, '2025-05-17 07:10:00', NULL),
-    (8,  1, '2025-05-17 07:45:00', NULL);
+    (2,  1, CURRENT_DATE, NULL),
+    (8,  1, CURRENT_DATE - INTERVAL '1 hour', NULL),
+    (1,  1, CURRENT_DATE - INTERVAL '1 day', CURRENT_DATE - INTERVAL '1 day' + INTERVAL '1 hour'),
+    (2,  2, CURRENT_DATE - INTERVAL '2 days', CURRENT_DATE - INTERVAL '2 days' + INTERVAL '1 hour'),
+    (3,  3, CURRENT_DATE - INTERVAL '3 days', CURRENT_DATE - INTERVAL '3 days' + INTERVAL '1 hour');
 
 
 -- =============================================================

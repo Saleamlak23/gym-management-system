@@ -32,8 +32,8 @@ export default function CheckIn() {
   const fetchLog = async () => {
     setLogLoading(true)
     try {
-      const data = await getBranchAttendance(branchId)
-      setTodayLog(data.slice(0, 20))
+      const response = await getBranchAttendance(branchId)
+      setTodayLog(response.attendance.slice(0, 20))
     } finally {
       setLogLoading(false)
     }

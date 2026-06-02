@@ -90,12 +90,12 @@ export async function getMemberAttendance(
  */
 export async function getBranchAttendance(
   branchId: number,
-): Promise<AttendanceRecord[]> {
+): Promise<{ attendance: AttendanceRecord[]; branch?: { branch_id: number; branch_name: string; date: string } }> {
   const res = await api.get<{ data: any }>(`/attendance/branch/${branchId}`)
   const raw = res.data.data || {}
-  if (Array.isArray(raw)) return raw
-  if (Array.isArray(raw.attendance)) return raw.attendance
-  return []
+  const attendance: AttendanceRecord[] = Array.isArray(raw) ? raw : (Array.isArray(raw.attendance) ? raw.attendance : [])
+  const branch = raw.branch
+  return { attendance, branch }
 }
 
 /**

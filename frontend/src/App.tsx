@@ -54,8 +54,20 @@ function AppShell() {
         mobileOpen={mobileOpen}
         onClose={() => setMobileOpen(false)}
       />
+
+      {mobileOpen && (
+        <div
+          className="backdrop"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       <div className="main-content">
-        <TopBar onMenuClick={() => setMobileOpen((o) => !o)} />
+        <TopBar
+          mobileOpen={mobileOpen}
+          onMenuClick={() => setMobileOpen((o) => !o)}
+        />
         <Routes>
 
           {/* ── Admin ── */}

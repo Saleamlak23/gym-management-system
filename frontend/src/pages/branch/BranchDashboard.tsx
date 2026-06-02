@@ -145,7 +145,10 @@ export default function BranchDashboard() {
   }
 
   return (
-    <PageWrapper title="Branch Dashboard" subtitle="Your branch at a glance">
+    <PageWrapper 
+      title={analytics?.name ? `${analytics.name} Dashboard` : 'Branch Dashboard'} 
+      subtitle="Your branch at a glance"
+    >
       {error && <div className="alert alert--danger">{error}</div>}
 
       {/* Equipment alert */}
