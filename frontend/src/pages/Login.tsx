@@ -57,9 +57,30 @@ export default function Login() {
       const { token, user } = await loginUser(form)
       login(token, user)
 
-      // Redirect to where they were trying to go, or role home
+      // Redirect to where they were trying to go, or role home.
+      // If the stored `from` points to a path the current user isn't
+      // permitted to view (e.g. member -> /staff), fall back to their
+      // role home to avoid an immediate 403 page.
       const from = (location.state as { from?: Location })?.from?.pathname
-      navigate(from ?? HOME_BY_ROLE[user.role], { replace: true })
+      const roleHome = HOME_BY_ROLE[user.role]
+
+      const prefixAllowedRoles: Record<string, string[]> = {
+        '/admin': ['enterprise_admin'],
+        '/branch': ['enterprise_admin', 'branch_manager'],
+        '/staff': ['staff', 'trainer', 'enterprise_admin'],
+        '/member': ['member', 'enterprise_admin'],
+      }
+
+      const isAllowedForFrom = (path?: string) => {
+        if (!path) return true
+        // find the mapping key that matches the path prefix
+        const key = Object.keys(prefixAllowedRoles).find((p) => path.startsWith(p))
+        if (!key) return true // unknown routes — let routing decide
+        return prefixAllowedRoles[key].includes(user.role)
+      }
+
+      const target = isAllowedForFrom(from) ? (from ?? roleHome) : roleHome
+      navigate(target, { replace: true })
     } catch (err) {
       setApiError(
         err instanceof Error ? err.message : 'Invalid email or password',

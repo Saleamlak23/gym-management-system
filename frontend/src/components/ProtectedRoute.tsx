@@ -34,9 +34,19 @@ export default function ProtectedRoute({ children, roles = [] }: Props) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  // Logged in but wrong role — redirect to 403 page
-  if (roles.length > 0 && !roles.includes(user.role)) {
-    return <Navigate to="/unauthorized" replace />
+  // Logged in but wrong role — redirect to 403 page and include
+  // the original location and required roles in state for debugging.
+  // Enterprise admins should be allowed everywhere, so treat them
+  // as having implicit access to role-protected routes.
+  const isAllowedRole = roles.length === 0 || roles.includes(user.role) || user.role === 'enterprise_admin'
+  if (!isAllowedRole) {
+    return (
+      <Navigate
+        to="/unauthorized"
+        state={{ from: location, requiredRoles: roles }}
+        replace
+      />
+    )
   }
 
   return <>{children}</>

@@ -1,10 +1,12 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/context/useAuth'
 import { HOME_BY_ROLE } from '@/context/auth.constants'
 
 export default function Unauthorized() {
   const { user } = useAuth()
   const home = user ? HOME_BY_ROLE[user.role] : '/login'
+  const location = useLocation()
+  const state = location.state as { from?: Location; requiredRoles?: string[] } | null
 
   return (
     <div
@@ -41,6 +43,14 @@ export default function Unauthorized() {
             {' '}Your current role is{' '}
             <strong style={{ color: 'var(--text-1)' }}>{user.role}</strong>.
           </>
+        )}
+        {state?.from && (
+          <div style={{ marginTop: 8, color: 'var(--text-2)', fontSize: 13 }}>
+            Attempted: <strong style={{ color: 'var(--text-1)' }}>{(state.from as Location).pathname}</strong>
+            {state.requiredRoles && (
+              <div>Required: {state.requiredRoles.join(', ')}</div>
+            )}
+          </div>
         )}
       </p>
 
