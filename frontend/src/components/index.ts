@@ -11,6 +11,8 @@ export { default as Spinner }        from './Spinner'
 export { default as StatCard }       from './StatCard'
 export { default as Table }          from './Table'
 export { default as TopBar }         from './TopBar'
+export { default as ThemeToggle }    from './ThemeToggle'
+export { default as PublicLayout }   from './PublicLayout'
 
 // Also export the Column type so pages can type their column definitions
 export type { Column } from './Table'

@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from '@/context/AuthContext'
 import { useAuth } from '@/context/useAuth'
 import { setTokenGetter } from '@/services/api'
-import { Sidebar, TopBar, ProtectedRoute } from '@/components'
+import { Sidebar, TopBar, ProtectedRoute, PublicLayout } from '@/components'
 import ErrorBoundary from '@/components/ErrorBoundary'
 
 // ── Auth pages ─────────────────────────────────────────────
@@ -186,8 +186,10 @@ export default function App() {
       <AuthProvider>
         <Routes>
           {/* Public routes */}
-          <Route path="/login"    element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route element={<PublicLayout />}>
+            <Route path="/login"    element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
 
           {/* All authenticated routes go through AppShell */}
           <Route path="/*" element={<ErrorBoundary><AppShell /></ErrorBoundary>} />

@@ -1,5 +1,6 @@
 import { useAuth } from '@/context/useAuth'
 import { initials, titleCase } from '@/utils/formatters'
+import ThemeToggle from './ThemeToggle'
 import './components.css'
 
 interface Props {
@@ -25,22 +26,26 @@ export default function TopBar({ mobileOpen, onMenuClick }: Props) {
       {/* Spacer — pushes user info to the right on desktop */}
       <div />
 
-      {/* Right — user info chip */}
-      {user && (
-        <div className="topbar__user" role="status" aria-label="Logged in user">
-          <div className="topbar__avatar" aria-hidden="true">
-            {initials(`${user.first_name} ${user.last_name}`)}
+      <div className="topbar__actions">
+        <ThemeToggle />
+
+        {/* Right — user info chip */}
+        {user && (
+          <div className="topbar__user" role="status" aria-label="Logged in user">
+            <div className="topbar__avatar" aria-hidden="true">
+              {initials(`${user.first_name} ${user.last_name}`)}
+            </div>
+            <div className="topbar__user-info">
+              <span className="topbar__user-name">
+                {user.first_name} {user.last_name}
+              </span>
+              <span className="topbar__user-role">
+                {titleCase(user.role)}
+              </span>
+            </div>
           </div>
-          <div className="topbar__user-info">
-            <span className="topbar__user-name">
-              {user.first_name} {user.last_name}
-            </span>
-            <span className="topbar__user-role">
-              {titleCase(user.role)}
-            </span>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </header>
   )
 }

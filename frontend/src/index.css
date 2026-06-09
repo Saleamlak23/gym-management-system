@@ -4,7 +4,8 @@
    ============================================================ */
 
 /* ── Design Tokens ───────────────────────────────────────── */
-:root {
+:root,
+[data-theme='dark'] {
   /* Backgrounds */
   --bg-base:      #080808;
   --bg-surface:   #111111;
@@ -37,6 +38,16 @@
   --text-2:       #888888;
   --text-3:       #444444;
 
+  /* Surfaces & overlays */
+  --topbar-bg:           rgba(8, 8, 8, 0.85);
+  --overlay-backdrop:    rgba(0, 0, 0, 0.45);
+  --overlay-modal:       rgba(0, 0, 0, 0.75);
+  --table-row-hover:     rgba(255, 255, 255, 0.02);
+  --btn-primary-hover:   #ffffff;
+  --btn-secondary-hover: #2a2a2a;
+  --badge-muted-bg:      rgba(255, 255, 255, 0.06);
+  --badge-muted-bg-faint: rgba(255, 255, 255, 0.04);
+
   /* Typography */
   --font-display: 'Bebas Neue', sans-serif;
   --font-body:    'Manrope', sans-serif;
@@ -55,6 +66,44 @@
   /* Layout */
   --sidebar-w: 240px;
   --topbar-h:  60px;
+}
+
+[data-theme='light'] {
+  --bg-base:      #f3f3f4;
+  --bg-surface:   #ebebec;
+  --bg-card:      #ffffff;
+  --bg-elevated:  #f0f0f1;
+  --bg-input:     #ffffff;
+
+  --border:       rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.16);
+  --border-focus: var(--neon);
+
+  --neon:         #6db300;
+  --neon-dim:     rgba(109, 179, 0, 0.14);
+  --neon-glow:    0 0 20px rgba(109, 179, 0, 0.25);
+
+  --success:      #16a34a;
+  --success-dim:  rgba(22, 163, 74, 0.12);
+  --danger:       #dc2626;
+  --danger-dim:   rgba(220, 38, 38, 0.1);
+  --warning:      #d97706;
+  --warning-dim:  rgba(217, 119, 6, 0.12);
+  --info:         #0284c7;
+  --info-dim:     rgba(2, 132, 199, 0.12);
+
+  --text-1:       #111111;
+  --text-2:       #5c5c5c;
+  --text-3:       #9a9a9a;
+
+  --topbar-bg:           rgba(255, 255, 255, 0.88);
+  --overlay-backdrop:    rgba(0, 0, 0, 0.25);
+  --overlay-modal:       rgba(0, 0, 0, 0.45);
+  --table-row-hover:     rgba(0, 0, 0, 0.03);
+  --btn-primary-hover:   #000000;
+  --btn-secondary-hover: #e4e4e6;
+  --badge-muted-bg:      rgba(0, 0, 0, 0.06);
+  --badge-muted-bg-faint: rgba(0, 0, 0, 0.04);
 }
 
 /* ── Reset ───────────────────────────────────────────────── */
@@ -78,6 +127,7 @@ body {
   color: var(--text-1);
   line-height: 1.5;
   min-height: 100vh;
+  transition: background var(--transition-md), color var(--transition-md);
 }
 
 a {
@@ -125,7 +175,7 @@ img {
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--overlay-backdrop);
   z-index: 20;
 }
 
