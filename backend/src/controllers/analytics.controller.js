@@ -78,7 +78,7 @@ export const overview = asyncHandler(async (req, res) => {
              b.branch_id,
              b.name,
              -- Active members who have attended this branch
-             COUNT(DISTINCT s.member_id) FILTER (
+             COUNT(DISTINCT a.member_id) FILTER (
                WHERE s.status = 'active' AND s.end_date >= CURRENT_DATE
              )::int                                   AS active_subscriptions,
              -- Today's check-ins at this branch
@@ -86,7 +86,7 @@ export const overview = asyncHandler(async (req, res) => {
                WHERE a.check_in::date = CURRENT_DATE
              )::int                                   AS today_checkins,
              -- This month's revenue (approximated via payments — no branch_id on payments)
-             -- We use staff branch as a proxy for which branch generated the activity
+             -- We use member attendance at the branch as a proxy for branch activity
              (
                SELECT COALESCE(SUM(p.amount), 0)
                FROM payments p
@@ -96,8 +96,8 @@ export const overview = asyncHandler(async (req, res) => {
                WHERE DATE_TRUNC('month', p.payment_date) = DATE_TRUNC('month', NOW())
              )                                        AS monthly_revenue_estimate
            FROM branches    b
-           LEFT JOIN subscriptions s ON s.member_id IS NOT NULL
            LEFT JOIN attendance    a ON a.branch_id = b.branch_id
+           LEFT JOIN subscriptions s ON s.member_id = a.member_id
            GROUP BY b.branch_id, b.name
            ORDER BY b.name ASC`),
   ]);

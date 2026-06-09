@@ -51,7 +51,7 @@ export const register = asyncHandler(async (req, res) => {
   const { rows } = await query(
     `INSERT INTO members (first_name, last_name, email, phone, password)
      VALUES ($1, $2, $3, $4, $5)
-     RETURNING member_id, first_name, last_name, email, phone, join_date`,
+     RETURNING member_id AS id, first_name, last_name, email, phone, join_date`,
     [first_name, last_name, email, phone || null, hashedPassword]
   );
 
@@ -59,7 +59,7 @@ export const register = asyncHandler(async (req, res) => {
 
   // 4. Sign and return the token
   const token = signToken({
-    id:        member.member_id,
+    id:        member.id,
     email:     member.email,
     role:      'member',
     branch_id: null,
@@ -225,6 +225,7 @@ export const getMe = asyncHandler(async (req, res) => {
 const mapRoleName = (roleName = '') => {
   const name = roleName.toLowerCase();
 
+  if (name.includes('admin'))      return 'enterprise_admin';
   if (name.includes('manager'))    return 'branch_manager';
   if (name.includes('trainer'))    return 'trainer';
   if (name.includes('instructor')) return 'trainer';

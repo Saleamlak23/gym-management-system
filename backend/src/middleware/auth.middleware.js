@@ -140,10 +140,22 @@ const authorizeSelf = (...overrideRoles) => {
       return next();
     }
 
-    // For regular users, the URL :id must match their own id
-    const resourceId = parseInt(req.params.id, 10);
+    // For regular users, the URL parameter must match their own id.
+    // Support different routes that use memberId/trainerId/sessionId/etc.
+    const resourceId = parseInt(
+      req.params.id ||
+      req.params.memberId ||
+      req.params.trainerId ||
+      req.params.branchId ||
+      req.params.paymentId ||
+      req.params.attendanceId ||
+      req.params.sessionId ||
+      req.params.subId ||
+      '',
+      10
+    );
 
-    if (req.user.id !== resourceId) {
+    if (Number.isNaN(resourceId) || req.user.id !== resourceId) {
       return sendError(
         res,
         'Access denied. You can only access your own data.',

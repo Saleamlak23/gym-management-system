@@ -97,6 +97,23 @@ router.get(
 );
 
 // -------------------------------------------------------------
+//  GET /api/attendance/branch/:branchId
+//  Alias for /today/:branchId for compatibility.
+//  Returns today's attendance log for a specific branch.
+// -------------------------------------------------------------
+router.get(
+  '/branch/:branchId',
+  [
+    param('branchId')
+      .isInt({ min: 1 })
+      .withMessage('Branch ID must be a positive integer'),
+  ],
+  validate,
+  authorize('enterprise_admin', 'branch_manager', 'staff'),
+  todayByBranch
+);
+
+// -------------------------------------------------------------
 //  GET /api/attendance/heatmap/:branchId
 //  Average check-ins grouped by day of week and hour of day.
 //  Returns a 7×24 grid used to render the peak-hours heatmap.
