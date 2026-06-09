@@ -112,7 +112,7 @@ export default function Attendance() {
   return (
     <PageWrapper
       title="Attendance"
-      subtitle="Daily check-in log"
+      subtitle={branchName ? `${branchName} — daily check-in log` : 'Daily check-in log'}
     >
       {error && <div className="alert alert--danger">{error}</div>}
 

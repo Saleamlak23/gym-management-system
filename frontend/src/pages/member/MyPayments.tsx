@@ -47,7 +47,7 @@ export default function MyPayments() {
   const mostUsedMethod = Object.entries(byMethod).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—'
 
   const lastPayment = payments.length
-    ? formatDateTime(payments[0].created_at)
+    ? formatDateTime(payments[0].created_at ?? payments[0].payment_date)
     : '—'
 
   // ── Columns ────────────────────────────────────────────
