@@ -1,123 +1,187 @@
-import { useState, useEffect } from 'react';
-import { PageWrapper } from '@/components/ui/PageWrapper';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { getMyTrainingSessions, cancelSession } from '@/services/training.service';
-import { formatDateTime, formatDuration } from '@/utils/formatters';
-import { getTrainingStatusColor } from '@/utils/status-helpers';
-import { useToast } from '@/hooks/use-toast';
-import { Dumbbell } from 'lucide-react';
+import { useEffect, useCallback, useState } from 'react'
+import { useAuth } from '@/context/useAuth'
+import { PageWrapper, Card, Table, Badge, Button, StatCard } from '@/components'
+import type { Column } from '@/components'
+import { getMemberSessions, cancelSession } from '@/services/training.service'
+import { formatDateTime, formatDuration } from '@/utils/formatters'
+import type { TrainingSession, TrainingStatus } from '@/types'
 
-export const MySessions = () => {
-  const [sessions, setSessions] = useState<any>({ upcoming: [], past: [] });
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+type TabFilter = TrainingStatus | 'all'
 
+export default function MySessions() {
+  const { user }  = useAuth()
+  const memberId  = user?.id ?? 0
+
+  const [sessions, setSessions] = useState<TrainingSession[]>([])
+  const [loading,  setLoading]  = useState(true)
+  const [error,    setError]    = useState('')
+  const [tab,      setTab]      = useState<TabFilter>('all')
+  const [success,  setSuccess]  = useState('')
+
+  // Auto-clear success message
   useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        setLoading(true);
-        const response = await getMyTrainingSessions();
-        setSessions(response.data);
-      } catch (error) {
-        console.error('Failed to fetch sessions:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!success) return
+    const t = setTimeout(() => setSuccess(''), 4000)
+    return () => clearTimeout(t)
+  }, [success])
 
-    fetchSessions();
-  }, []);
-
-  const handleCancel = async (sessionId: number) => {
+  const fetchSessions = useCallback(async () => {
+    setLoading(true)
+    setError('')
     try {
-      await cancelSession(sessionId);
-      setSessions((prev) => ({
-        ...prev,
-        upcoming: prev.upcoming.filter((s) => s.session_id !== sessionId),
-      }));
-      toast({
-        title: 'Success',
-        description: 'Session cancelled',
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to cancel session',
-        variant: 'destructive',
-      });
+      const data = await getMemberSessions(memberId)
+      setSessions(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load sessions')
+    } finally {
+      setLoading(false)
     }
-  };
+  }, [memberId])
 
-  if (loading) {
-    return <PageWrapper title="My Sessions">Loading...</PageWrapper>;
+  useEffect(() => { fetchSessions() }, [fetchSessions])
+
+  const handleCancel = async (id: number) => {
+    if (!window.confirm('Cancel this training session?')) return
+    try {
+      await cancelSession(id)
+      setSessions((prev) => prev.filter((s) => s.id !== id))
+      setSuccess('Session cancelled successfully.')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Cancel failed')
+    }
   }
 
+  // ── Derived data ───────────────────────────────────────
+  const counts = sessions.reduce<Record<string, number>>((acc, s) => {
+    acc[s.status] = (acc[s.status] ?? 0) + 1
+    return acc
+  }, {})
+
+  const filtered = tab === 'all'
+    ? sessions
+    : sessions.filter((s) => s.status === tab)
+
+  const upcomingCount = (counts['scheduled'] ?? 0) + (counts['confirmed'] ?? 0)
+
+  // ── Columns ────────────────────────────────────────────
+  const columns: Column<TrainingSession>[] = [
+    {
+      key: 'trainer_name',
+      label: 'Trainer',
+      render: (v, row) => (
+        <span style={{ fontWeight: 600 }}>
+          {(v as string) ?? `Trainer #${row.trainer_id}`}
+        </span>
+      ),
+    },
+    {
+      key: 'scheduled_at',
+      label: 'Date & Time',
+      render: (v) => (
+        <span className="mono">{formatDateTime(v as string)}</span>
+      ),
+    },
+    {
+      key: 'duration_minutes',
+      label: 'Duration',
+      render: (v) => (
+        <span className="mono">{formatDuration(v as number)}</span>
+      ),
+    },
+    {
+      key: 'notes',
+      label: 'Notes',
+      render: (v) => (v as string) || <span style={{ color: 'var(--text-3)' }}>—</span>,
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (v) => <Badge status={v as string} />,
+    },
+    {
+      key: 'id',
+      label: '',
+      sortable: false,
+      render: (_, row) =>
+        row.status === 'scheduled' || row.status === 'confirmed' ? (
+          <Button
+            variant="danger"
+            size="sm"
+            onClick={() => handleCancel(row.id!)}
+          >
+            Cancel
+          </Button>
+        ) : null,
+    },
+  ]
+
   return (
-    <PageWrapper title="My Training Sessions">
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold">Upcoming Sessions</h2>
+    <PageWrapper
+      title="My Training"
+      subtitle="Personal training sessions"
+    >
+      {error   && <div className="alert alert--danger"  role="alert">{error}</div>}
+      {success && <div className="alert alert--success" role="alert">{success}</div>}
 
-        {sessions.upcoming?.length === 0 ? (
-          <EmptyState
-            icon={Dumbbell}
-            title="No training sessions booked"
-            message="Book a personal training session to get started!"
-            actionLabel="Book Now"
-          />
-        ) : (
-          <div className="space-y-3">
-            {sessions.upcoming?.map((session) => (
-              <Card key={session.session_id} className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold">{session.trainer_name}</h3>
-                      <Badge className={getTrainingStatusColor(session.status)}>
-                        {session.status}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      {formatDateTime(session.scheduled_at)}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Duration: {formatDuration(session.duration_min)}
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-red-600"
-                    onClick={() => handleCancel(session.session_id)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-
-        {sessions.past && sessions.past.length > 0 && (
-          <>
-            <h2 className="text-2xl font-bold mt-8">Past Sessions</h2>
-            <div className="space-y-3">
-              {sessions.past.map((session) => (
-                <Card key={session.session_id} className="p-4 opacity-60">
-                  <div>
-                    <h3 className="font-semibold">{session.trainer_name}</h3>
-                    <p className="text-sm text-gray-600">
-                      {formatDateTime(session.scheduled_at)}
-                    </p>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </>
-        )}
+      {/* KPIs */}
+      <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <StatCard label="Total Sessions" value={sessions.length}          icon="◈" />
+        <StatCard label="Upcoming"       value={upcomingCount}            icon="◐" />
+        <StatCard label="Completed"      value={counts['completed'] ?? 0} icon="✓" />
+        <StatCard label="Cancelled"      value={counts['cancelled'] ?? 0} icon="○" />
       </div>
+
+      {/* Upcoming info banner */}
+      {upcomingCount > 0 && (
+        <div className="alert alert--info">
+          ◐ You have{' '}
+          <strong>
+            {upcomingCount} upcoming session{upcomingCount !== 1 ? 's' : ''}
+          </strong>
+          . Contact the front desk to book additional sessions.
+        </div>
+      )}
+
+      <Card>
+        {/* Status tabs */}
+        <div className="tabs">
+          {(['all', 'scheduled', 'confirmed', 'completed', 'cancelled'] as const).map((t) => (
+            <button
+              key={t}
+              className={`tab-btn${tab === t ? ' tab-btn--active' : ''}`}
+              onClick={() => setTab(t)}
+            >
+              {t === 'all' ? 'All' : t.charAt(0).toUpperCase() + t.slice(1)}
+              {t !== 'all' && counts[t] != null && (
+                <span
+                  style={{
+                    marginLeft: 6,
+                    background: tab === t ? 'var(--neon)' : 'var(--bg-elevated)',
+                    color:      tab === t ? 'var(--bg-base)' : 'var(--text-2)',
+                    borderRadius: 99,
+                    fontSize: 10,
+                    padding: '1px 6px',
+                    fontWeight: 700,
+                  }}
+                >
+                  {counts[t]}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        <Table
+          columns={columns}
+          data={filtered}
+          loading={loading}
+          emptyMessage={
+            tab === 'all'
+              ? 'No training sessions yet. Ask at the front desk to get started.'
+              : `No ${tab} sessions.`
+          }
+        />
+      </Card>
     </PageWrapper>
-  );
-};
+  )
+}

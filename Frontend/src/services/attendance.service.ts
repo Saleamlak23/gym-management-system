@@ -1,83 +1,131 @@
-import api from '@/lib/api';
+import api from './api'
+import type { AttendanceRecord, HeatmapCell } from '@/types'
 
-export interface AttendanceRecord {
-  attendance_id: number;
-  member_id: number;
-  member_name: string;
-  branch_id: number;
-  branch_name: string;
-  check_in: string;
-  check_out: string | null;
-  duration_minutes?: number;
-  status: 'checked_in' | 'checked_out';
+// ── Shapes ────────────────────────────────────────────────
+
+export interface CheckInPayload {
+  member_id: number
+  branch_id: number
 }
 
-export interface HeatmapData {
-  branch: { branch_id: number; branch_name: string };
-  analysis_period_days: number;
-  max_checkins: number;
-  grid: Array<{
-    day_of_week: number;
-    day_name: string;
-    hours: Array<{
-      hour_of_day: number;
-      total_checkins: number;
-      avg_per_week: number;
-    }>;
-  }>;
+export interface CheckOutPayload {
+  member_id: number
+  branch_id: number
 }
 
-export const checkin = async (memberId: number, branchId: number) => {
-  const response = await api.post('/attendance/checkin', {
-    member_id: memberId,
-    branch_id: branchId,
-  });
-  return response.data;
-};
+export interface GetAttendanceParams {
+  branch_id?: number
+  date?: string       // ISO date — defaults to today
+  member_id?: number
+}
 
-export const checkout = async (memberId: number, branchId: number) => {
-  const response = await api.post('/attendance/checkout', {
-    member_id: memberId,
-    branch_id: branchId,
-  });
-  return response.data;
-};
+// ── Calls ─────────────────────────────────────────────────
 
-export const getAttendanceRecords = async (filters?: {
-  branchId?: number;
-  memberId?: number;
-  date?: string;
-  startDate?: string;
-  endDate?: string;
-  page?: number;
-  limit?: number;
-}) => {
-  const response = await api.get('/attendance', { params: filters });
-  return response.data;
-};
+/**
+ * POST /api/attendance/checkin
+ * Records a member check-in at a branch.
+ * Returns 403 if the member has no active subscription.
+ * Accessible by staff and above.
+ */
+export async function checkIn(
+  payload: CheckInPayload,
+): Promise<AttendanceRecord> {
+  const res = await api.post<{ data: AttendanceRecord }>(
+    '/attendance/checkin',
+    payload,
+  )
+  return res.data.data
+}
 
-export const getMemberAttendance = async (
+/**
+ * POST /api/attendance/checkout
+ * Records a member check-out at a branch.
+ * Accessible by staff and above.
+ */
+export async function checkOut(
+  payload: CheckOutPayload,
+): Promise<AttendanceRecord> {
+  const res = await api.post<{ data: AttendanceRecord }>(
+    '/attendance/checkout',
+    payload,
+  )
+  return res.data.data
+}
+
+/**
+ * GET /api/attendance
+ * Returns attendance records across all branches
+ * with optional filters.
+ * Accessible by enterprise_admin only.
+ */
+export async function getAttendance(
+  params?: GetAttendanceParams,
+): Promise<AttendanceRecord[]> {
+  const res = await api.get<{ data: any }>('/attendance', { params })
+  const raw = res.data.data || {}
+  if (Array.isArray(raw)) return raw
+  if (Array.isArray(raw.attendance)) return raw.attendance
+  return []
+}
+
+/**
+ * GET /api/attendance/member/:id
+ * Returns the attendance history for one member.
+ * Accessible by the member themselves and staff.
+ */
+export async function getMemberAttendance(
   memberId: number,
-  page?: number,
-  limit?: number
-) => {
-  const response = await api.get(`/attendance/member/${memberId}`, {
-    params: { page, limit },
-  });
-  return response.data;
-};
+): Promise<AttendanceRecord[]> {
+  const res = await api.get<{ data: any }>(`/attendance/member/${memberId}`)
+  const raw = res.data.data || {}
+  if (Array.isArray(raw)) return raw
+  if (Array.isArray(raw.attendance)) return raw.attendance
+  return []
+}
 
-export const getBranchTodayAttendance = async (branchId: number) => {
-  const response = await api.get(`/attendance/today/${branchId}`);
-  return response.data;
-};
-
-export const getHeatmapData = async (
+/**
+ * GET /api/attendance/branch/:id
+ * Returns today's attendance log for a specific branch.
+ * Accessible by staff and above.
+ */
+export async function getBranchAttendance(
   branchId: number,
-  days: number = 90
-): Promise<{ success: boolean; data: HeatmapData }> => {
-  const response = await api.get(`/attendance/heatmap/${branchId}`, {
-    params: { days },
-  });
-  return response.data;
-};
+): Promise<{ attendance: AttendanceRecord[]; branch?: { branch_id: number; branch_name: string; date: string } }> {
+  const res = await api.get<{ data: any }>(`/attendance/branch/${branchId}`)
+  const raw = res.data.data || {}
+  const attendance: AttendanceRecord[] = Array.isArray(raw) ? raw : (Array.isArray(raw.attendance) ? raw.attendance : [])
+  const branch = raw.branch
+  return { attendance, branch }
+}
+
+/**
+ * GET /api/attendance/heatmap/:branchId
+ * Returns average check-ins grouped by day-of-week and hour.
+ * Used to render the 7×24 peak hours heatmap.
+ * Accessible by staff and above.
+ */
+export async function getAttendanceHeatmap(
+  branchId: number,
+): Promise<HeatmapCell[]> {
+  const res = await api.get<{ data: any }>(`/attendance/heatmap/${branchId}`)
+  const raw = res.data.data || {}
+  // Backend returns a 7×24 grid under `grid` where each day has `hours` entries.
+  if (Array.isArray(raw.grid)) {
+    const flat: HeatmapCell[] = []
+    raw.grid.forEach((day: any, di: number) => {
+      const dayIdx = (day.day_of_week ?? di) // backend may use 0..6
+      const hours = Array.isArray(day.hours) ? day.hours : []
+      hours.forEach((h: any) => {
+        flat.push({
+          day_of_week: (dayIdx ?? di) + 1, // convert 0-based to 1-based
+          hour: h.hour_of_day ?? h.hour ?? 0,
+          avg_count: h.avg_per_week ?? h.avg_count ?? h.total_checkins ?? 0,
+        })
+      })
+    })
+    return flat
+  }
+  // Or backend may return a flat array
+  if (Array.isArray(raw)) return raw
+  return []
+}
