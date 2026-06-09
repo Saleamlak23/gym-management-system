@@ -1,157 +1,182 @@
-import { useState, useEffect } from 'react';
-import { PageWrapper } from '@/components/ui/PageWrapper';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { EmptyState } from '@/components/ui/EmptyState';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
-import { getBranchTodayAttendance, getHeatmapData } from '@/services/attendance.service';
-import { formatDateTime, formatTime, formatDuration } from '@/utils/formatters';
-import { useAuth } from '@/context/AuthContext';
-import { Users } from 'lucide-react';
+import { useEffect, useCallback, useState } from 'react'
+import { useAuth } from '@/context/useAuth'
+import { PageWrapper, Card, Table, StatCard } from '@/components'
+import type { Column } from '@/components'
+import { getBranchAttendance } from '@/services/attendance.service'
+import { formatDateTime } from '@/utils/formatters'
+import type { AttendanceRecord } from '@/types'
 
-export const Attendance = () => {
-  const { user } = useAuth();
-  const [todayAttendance, setTodayAttendance] = useState<any>(null);
-  const [heatmapData, setHeatmapData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+function toISODate(d: Date): string {
+  return d.toISOString().split('T')[0]
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user?.branch_id) return;
+export default function Attendance() {
+  const { user } = useAuth()
+  const branchId = user?.branch_id ?? 1
 
-      try {
-        setLoading(true);
-        const [todayRes, heatmapRes] = await Promise.all([
-          getBranchTodayAttendance(user.branch_id),
-          getHeatmapData(user.branch_id, 90),
-        ]);
-        setTodayAttendance(todayRes.data);
-        setHeatmapData(heatmapRes.data);
-      } catch (error) {
-        console.error('Failed to fetch attendance:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [records, setRecords] = useState<AttendanceRecord[]>([])
+  const [branchName, setBranchName] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error,   setError]   = useState('')
+  const [date,    setDate]    = useState(toISODate(new Date()))
 
-    fetchData();
-  }, [user?.branch_id]);
+  const fetchAttendance = useCallback(async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const response = await getBranchAttendance(branchId)
+      setBranchName(response.branch?.branch_name || `Branch ${branchId}`)
+      // Filter client-side by selected date
+      const filtered = response.attendance.filter((r) => r.check_in.startsWith(date))
+      setRecords(filtered)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load attendance')
+    } finally {
+      setLoading(false)
+    }
+  }, [branchId, date])
 
-  if (loading) {
-    return <PageWrapper title="Attendance">Loading...</PageWrapper>;
-  }
+  useEffect(() => { fetchAttendance() }, [fetchAttendance])
 
-  // Prepare heatmap visualization data
-  const heatmapChartData = heatmapData?.grid?.map((dayData: any) => {
-    const data: any = { day: dayData.day_name };
-    dayData.hours.forEach((hour: any) => {
-      data[`${hour.hour_of_day}:00`] = hour.total_checkins;
-    });
-    return data;
-  }) || [];
+  // ── Derived stats ──────────────────────────────────────
+  const stillIn   = records.filter((r) => !r.check_out).length
+  const checkedOut = records.filter((r) => !!r.check_out).length
+
+  const avgDuration = (() => {
+    const completed = records.filter((r) => r.check_out)
+    if (!completed.length) return null
+    const totalMs = completed.reduce((sum, r) => {
+      return sum + (new Date(r.check_out!).getTime() - new Date(r.check_in).getTime())
+    }, 0)
+    const avgMin = Math.round(totalMs / completed.length / 60_000)
+    const h = Math.floor(avgMin / 60)
+    const m = avgMin % 60
+    return h ? `${h}h ${m}m` : `${m}m`
+  })()
+
+  // ── Columns ────────────────────────────────────────────
+  const columns: Column<AttendanceRecord>[] = [
+    {
+      key: 'member_name',
+      label: 'Member',
+      render: (v) => (
+        <span style={{ fontWeight: 600 }}>{(v as string) ?? '—'}</span>
+      ),
+    },
+    {
+      key: 'check_in',
+      label: 'Check In',
+      render: (v) => (
+        <span className="mono">{formatDateTime(v as string)}</span>
+      ),
+    },
+    {
+      key: 'check_out',
+      label: 'Check Out',
+      render: (v) =>
+        v ? (
+          <span className="mono">{formatDateTime(v as string)}</span>
+        ) : (
+          <span
+            style={{
+              color: 'var(--neon)',
+              fontWeight: 600,
+              fontSize: 11,
+              textTransform: 'uppercase',
+              letterSpacing: '0.06em',
+            }}
+          >
+            ● Still In
+          </span>
+        ),
+    },
+    {
+      key: 'check_in',
+      label: 'Duration',
+      sortable: false,
+      render: (_, row) => {
+        if (!row.check_out) return <span style={{ color: 'var(--text-3)' }}>—</span>
+        const ms  = new Date(row.check_out).getTime() - new Date(row.check_in).getTime()
+        const min = Math.round(ms / 60_000)
+        const h   = Math.floor(min / 60)
+        const m   = min % 60
+        return (
+          <span className="mono" style={{ fontSize: 12 }}>
+            {h ? `${h}h ${m}m` : `${m}m`}
+          </span>
+        )
+      },
+    },
+  ]
 
   return (
-    <PageWrapper title="Attendance & Analytics">
-      <div className="space-y-6">
-        {/* Summary Stats */}
-        {todayAttendance && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="p-6">
-              <p className="text-sm text-gray-600">Currently Inside</p>
-              <p className="text-3xl font-bold">{todayAttendance.currently_inside}</p>
-            </Card>
-            <Card className="p-6">
-              <p className="text-sm text-gray-600">Total Visits Today</p>
-              <p className="text-3xl font-bold">{todayAttendance.total_visits}</p>
-            </Card>
-            <Card className="p-6">
-              <p className="text-sm text-gray-600">Branch</p>
-              <p className="text-xl font-bold">{todayAttendance.branch?.branch_name}</p>
-            </Card>
-          </div>
-        )}
+    <PageWrapper
+      title="Attendance"
+      subtitle="Daily check-in log"
+    >
+      {error && <div className="alert alert--danger">{error}</div>}
 
-        {/* Attendance List */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Today's Check-Ins</h3>
-          {todayAttendance?.attendance?.length === 0 ? (
-            <EmptyState
-              icon={Users}
-              title="No members checked in yet"
-              message="Members will appear here as they check in."
-            />
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="px-4 py-2 text-left">Member</th>
-                    <th className="px-4 py-2 text-left">Check In</th>
-                    <th className="px-4 py-2 text-left">Check Out</th>
-                    <th className="px-4 py-2 text-left">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {todayAttendance?.attendance?.map((record: any) => (
-                    <tr key={record.attendance_id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium">{record.member_name}</td>
-                      <td className="px-4 py-3">{formatTime(record.check_in)}</td>
-                      <td className="px-4 py-3">
-                        {record.check_out ? formatTime(record.check_out) : '—'}
-                      </td>
-                      <td className="px-4 py-3">
-                        <Badge
-                          variant={
-                            record.status === 'checked_in' ? 'default' : 'secondary'
-                          }
-                        >
-                          {record.status === 'checked_in' ? 'Inside' : 'Left'}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Card>
-
-        {/* Peak Hours Heatmap */}
-        {heatmapData && (
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Peak Hours (Last 90 Days)</h3>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={heatmapChartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                {heatmapData.grid?.[0]?.hours?.map((hour: any, idx: number) => (
-                  <Line
-                    key={idx}
-                    type="monotone"
-                    dataKey={`${hour.hour_of_day}:00`}
-                    stroke={`hsl(${(idx * 360) / heatmapData.grid[0].hours.length}, 70%, 50%)`}
-                    dot={false}
-                    strokeWidth={2}
-                  />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
-          </Card>
-        )}
+      {/* KPI row */}
+      <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <StatCard label="Total Today"   value={records.length} icon="◈" />
+        <StatCard label="Still In"      value={stillIn}        icon="●"  />
+        <StatCard label="Checked Out"   value={checkedOut}     icon="○"  />
+        <StatCard label="Avg Duration"  value={avgDuration}    icon="◑"  />
       </div>
+
+      <Card>
+        {/* Date filter */}
+        <div className="filters-bar">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <label
+              htmlFor="att-date"
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                color: 'var(--text-2)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Date
+            </label>
+            <input
+              id="att-date"
+              type="date"
+              className="input-field"
+              style={{ width: 'auto' }}
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+
+          <button
+            className="btn btn--ghost btn--sm"
+            onClick={() => setDate(toISODate(new Date()))}
+          >
+            Today
+          </button>
+
+          <button
+            className="btn btn--secondary btn--sm"
+            onClick={fetchAttendance}
+          >
+            Refresh
+          </button>
+
+          <span style={{ fontSize: 13, color: 'var(--text-2)', marginLeft: 'auto' }}>
+            {records.length} record{records.length !== 1 ? 's' : ''}
+          </span>
+        </div>
+
+        <Table
+          columns={columns}
+          data={records}
+          loading={loading}
+          emptyMessage="No check-ins recorded for this date"
+        />
+      </Card>
     </PageWrapper>
-  );
-};
+  )
+}

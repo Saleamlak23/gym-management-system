@@ -1,74 +1,79 @@
-import api from '@/lib/api';
+import api from './api'
+import type { Payment, PaymentMethod, PaymentSummary } from '@/types'
+function normalizePayment(payment: Payment): Payment {
+  return {
+    ...payment,
+    created_at: payment.created_at ?? payment.payment_date,
+  }
+}
+// ── Shapes ────────────────────────────────────────────────
 
-export interface Payment {
-  payment_id: number;
-  member_id: number;
-  member_name: string;
-  amount: string;
-  method: 'cash' | 'card' | 'bank_transfer' | 'mobile_money';
-  payment_date: string;
+export interface GetPaymentsParams {
+  start_date?: string
+  end_date?: string
+  method?: PaymentMethod
+  search?: string
 }
 
-export interface PaymentSummary {
-  period: { start_date: string; end_date: string };
-  total_revenue: number;
-  by_method: Array<{
-    method: string;
-    transaction_count: number;
-    total: string;
-    average: string;
-  }>;
-  by_month: Array<{
-    month: string;
-    transaction_count: number;
-    total: string;
-  }>;
-  top_members: Array<{
-    member_id: number;
-    member_name: string;
-    payment_count: number;
-    total_paid: string;
-  }>;
+export interface CreatePaymentPayload {
+  member_id: number
+  amount: number
+  method: PaymentMethod
+  note?: string
 }
 
-export const recordPayment = async (
-  memberId: number,
-  amount: number,
-  method: string,
-  paymentDate?: string
-) => {
-  const response = await api.post('/payments', {
-    member_id: memberId,
-    amount,
-    method,
-    payment_date: paymentDate,
-  });
-  return response.data;
-};
+export interface GetSummaryParams {
+  start_date?: string
+  end_date?: string
+  branch_id?: number
+}
 
-export const getPayments = async (filters?: {
-  startDate?: string;
-  endDate?: string;
-  method?: string;
-  memberId?: number;
-  page?: number;
-  limit?: number;
-}) => {
-  const response = await api.get('/payments', { params: filters });
-  return response.data;
-};
+// ── Calls ─────────────────────────────────────────────────
 
-export const getPaymentSummary = async (
-  startDate?: string,
-  endDate?: string
-) => {
-  const response = await api.get('/payments/summary', {
-    params: { start_date: startDate, end_date: endDate },
-  });
-  return response.data;
-};
+/**
+ * GET /api/payments
+ * Returns all payments with optional date range, method,
+ * and member name filters.
+ * Accessible by enterprise_admin only.
+ */
+export async function getPayments(params?: GetPaymentsParams): Promise<Payment[]> {
+  const res = await api.get<{ data: { payments: Payment[] } }>('/payments', { params })
+  return res.data.data.payments.map(normalizePayment)
+}
 
-export const getMemberPayments = async (memberId: number) => {
-  const response = await api.get(`/payments/member/${memberId}`);
-  return response.data;
-};
+/**
+ * POST /api/payments
+ * Records a new payment for a member.
+ * Accessible by staff and enterprise_admin.
+ */
+export async function createPayment(
+  payload: CreatePaymentPayload,
+): Promise<Payment> {
+  const res = await api.post<{ data: { payment: Payment } }>('/payments', payload)
+  return normalizePayment(res.data.data.payment)
+}
+
+/**
+ * GET /api/payments/member/:id
+ * Returns all payments made by a specific member.
+ * Accessible by staff and enterprise_admin.
+ */
+export async function getMemberPayments(memberId: number): Promise<Payment[]> {
+  const res = await api.get<{ data: { payments: Payment[] } }>(`/payments/member/${memberId}`)
+  return res.data.data.payments.map(normalizePayment)
+}
+
+/**
+ * GET /api/payments/summary
+ * Returns aggregated revenue totals grouped by method,
+ * branch, and month — ready for chart rendering.
+ * Accessible by enterprise_admin only.
+ */
+export async function getPaymentSummary(
+  params?: GetSummaryParams,
+): Promise<PaymentSummary> {
+  const res = await api.get<{ data: PaymentSummary }>('/payments/summary', {
+    params,
+  })
+  return res.data.data
+}
